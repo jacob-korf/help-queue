@@ -19,7 +19,7 @@ class ClientHandler implements Runnable {
 	final DataOutputStream dos; 					// output stream for this client
 	Socket s; 										// socket for this client
 	boolean isloggedin; 							// flag, whether client is currently connected
-   //check
+   
 	// constructor 
 	public ClientHandler(Socket s, String name, DataInputStream dis, DataOutputStream dos) { 
 		this.dis = dis; 
