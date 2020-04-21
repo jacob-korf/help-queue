@@ -25,7 +25,7 @@ public class Client {
        
 		// establish the connection 
 		Socket s = new Socket(ip, ServerPort); 
-       
+       //checkcheck
 		// obtaining input and out streams 
 		DataInputStream dis = new DataInputStream(s.getInputStream()); 
 		DataOutputStream dos = new DataOutputStream(s.getOutputStream()); 
