@@ -10,7 +10,7 @@ import java.util.*;
 import java.net.*;
 
 //ClientHandler class 
-class ClientHandler implements Runnable {
+class DisplayHandler implements Runnable {
 	// data
 	//Scanner scn = new Scanner(System.in); 		// ???
 	//private String name; 							// client name
@@ -21,7 +21,7 @@ class ClientHandler implements Runnable {
 	boolean isloggedin; 							// flag, whether client is currently connected
    
 	// constructor 
-	public ClientHandler(Socket s, String name, DataInputStream dis, DataOutputStream dos) { 
+	public DisplayHandler(Socket s, String name, DataInputStream dis, DataOutputStream dos) { 
 		this.dis = dis; 
 		this.dos = dos; 
 		this.name = name; 
@@ -33,7 +33,7 @@ class ClientHandler implements Runnable {
 	@Override
 	public void run() { 
 		String received; 
-		while (this.isloggedin)  
+		while (true)  
 		{ 
 			try
 			{ 
@@ -48,24 +48,8 @@ class ClientHandler implements Runnable {
 					break; 
 				} 
                
-				// break the string into message and recipient part 
-				StringTokenizer st = new StringTokenizer(received, "#"); 
-				String MsgToSend = st.nextToken(); 
-				String recipient = st.nextToken(); 
-
-				// search for the recipient in the connected devices list from global Server class. 
-				// ar is the vector storing client of active users
-				// TODO: this search could be slow if large number of clients - could use HashMap
-				for (ClientHandler mc : Server.ar) { 
-					// if the recipient is found, write on its output stream 
-					if (mc.name.equals(recipient) && mc.isloggedin == true)  
-					{ 
-						mc.dos.writeUTF(this.name +" : "+ MsgToSend); 
-						break; 
-					} 
-				} 
 			} catch (IOException e) { 
-this.isloggedin = false;
+				e.printStackTrace(); 
 			} 
 		}	// end - while true 
 		
@@ -74,7 +58,7 @@ this.isloggedin = false;
 			this.dis.close(); 
 			this.dos.close(); 
 		} catch(IOException e) { 
-			System.out.println("ClientHandler, closing resources section");
+			System.out.println("DisplayHandler, closing resources section");
 			e.printStackTrace(); 
 		} 
 	} 	// end - method run

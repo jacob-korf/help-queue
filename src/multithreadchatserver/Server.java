@@ -8,69 +8,115 @@
 
 package multithreadchatserver;
 
-import java.io.*; 
-import java.util.*; 
-import java.net.*; 
+import java.io.*;
+import java.util.*;
+import java.net.*;
 
-public class Server  
-{ 
-	// Vector to store active clients 
-	static Vector<ClientHandler> ar = new Vector<>(); 
-   
-	// counter for clients 
-	static int i = 0; 
+public class Server {
+	// Vector to store active clients
+	static Vector<ClientHandler> ar = new Vector<>();
+	static Vector<DisplayHandler> disAr = new Vector<>();
 
-	public static void main(String[] args) throws IOException  
-	{ 
-		// server is listening on port 1234 
+	// counter for clients
+	static int i = 0;
+	static int j = 0;
+
+	public static void main(String[] args) throws IOException {
+		// server is listening on port 1234
 		@SuppressWarnings("resource")
-		ServerSocket ss = new ServerSocket(1234); 	// socket for server side
-       
-		Socket s; 									// socket for client side
-       
-		// run infinite loop for getting client requests 
-		while (true)  
-		{  
-			// NOTE: an accept call will wait (block) indefinitely waiting for a connection; if you want the enclosing loop to run regularly, 
-			//		you need to put a timeout on your serversocket and use exception handling to determine if the accept call was successful
-			//		(any code following the accept call will execute after the accept() succeeds) or failed due to the timeout (throws a 
-			//		SocketTimeoutException).  See the Java docs for the ServerSocket class or use online search on this topioc for details.
+		ServerSocket ss = new ServerSocket(1234); // socket for server side
+		ss.setSoTimeout(100);
+		ServerSocket displaySS = new ServerSocket(1235); // socket for server side
+		displaySS.setSoTimeout(100);
+		Socket s; // socket for client side
+
+		// run infinite loop for getting client requests
+		while (true) {
+			// NOTE: an accept call will wait (block) indefinitely waiting for a connection;
+			// if you want the enclosing loop to run regularly,
+			// you need to put a timeout on your serversocket and use exception handling to
+			// determine if the accept call was successful
+			// (any code following the accept call will execute after the accept() succeeds)
+			// or failed due to the timeout (throws a
+			// SocketTimeoutException). See the Java docs for the ServerSocket class or use
+			// online search on this topioc for details.
 			// Wait for and accept an incoming request
-			s = ss.accept(); 
-			// System.out.println("New client request received : " + s); 
-         
-			// create input and output streams for this socket 
-			DataInputStream dis = new DataInputStream(s.getInputStream()); 
-			DataOutputStream dos = new DataOutputStream(s.getOutputStream()); 
+			try {
+				s = ss.accept();
 
-			// Create a new handler object for handling this request.
-			String clientName = "client " + i;
-			ClientHandler mtch = new ClientHandler(s, clientName, dis, dos); 
+				// System.out.println("New client request received : " + s);
 
-			// Create a new Thread with this client handler object. 
-			Thread t = new Thread(mtch); 
-           
-			System.out.println("Adding client " + clientName  + " to active client list"); 
+				// create input and output streams for this socket
+				DataInputStream dis = new DataInputStream(s.getInputStream());
+				DataOutputStream dos = new DataOutputStream(s.getOutputStream());
 
-			// add this client to active clients list 
-			ar.add(mtch); 
-			
-			// display client list
-			System.out.println("Current Clients:");
-			for (ClientHandler mc : Server.ar) { 
-				if (mc.isloggedin == true) {
-					System.out.println(mc.name);
+				// Create a new handler object for handling this request.
+				String clientName = "client " + i;
+				ClientHandler mtch = new ClientHandler(s, clientName, dis, dos);
+
+				// Create a new Thread with this client handler object.
+				Thread t = new Thread(mtch);
+
+				System.out.println("Adding client " + clientName + " to active client list");
+
+				// add this client to active clients list
+				ar.add(mtch);
+
+				// display client list
+				System.out.println("Current Clients:");
+				for (ClientHandler mc : Server.ar) {
+					if (mc.isloggedin == true) {
+						System.out.println(mc.name);
+					}
 				}
-			} 
-			System.out.println();
-			
-			// start the thread. 
-			t.start(); 
+				System.out.println();
 
-			// increment i for new client name
-			i++; 
+				// start the thread.
+				t.start();
 
-		}	// end - while true loop 
-	}	// end - method main
-	
-}	// end - class Server
+				// increment i for new client name
+				i++;
+			} catch (java.io.InterruptedIOException e) {
+
+				try {
+				//System.err.println("Timed Out (60 sec)!");
+				s = displaySS.accept();
+
+				// System.out.println("New client request received : " + s);
+
+				// create input and output streams for this socket
+				DataInputStream dis = new DataInputStream(s.getInputStream());
+				DataOutputStream dos = new DataOutputStream(s.getOutputStream());
+
+				// Create a new handler object for handling this request.
+				String displayName = "Display " + j;
+				DisplayHandler mtch = new DisplayHandler(s, displayName, dis, dos);
+
+				// Create a new Thread with this client handler object.
+				Thread t = new Thread(mtch);
+
+				System.out.println("Adding display " + displayName + " to active display list");
+
+				// add this client to active clients list
+				disAr.add(mtch);
+
+				// display client list
+				System.out.println("Current Display:");
+				for (DisplayHandler mc : Server.disAr) {
+					if (mc.isloggedin == true) {
+						System.out.println(mc.name);
+					}
+				}
+				System.out.println();
+
+				// start the thread.
+				t.start();
+
+				// increment i for new client name
+				j++;
+				} catch (java.io.InterruptedIOException ex) { }
+			}
+		} // end - while true loop
+	} // end - method main
+
+} // end - class Server

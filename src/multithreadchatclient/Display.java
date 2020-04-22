@@ -8,13 +8,11 @@ package multithreadchatclient;
 
 import java.io.*; 
 import java.net.*; 
-import java.util.Scanner;
+import java.util.Scanner; 
 
-import Gui.ClientPanel; 
-
-public class Client {
+public class Display {
 	// data
-	final static int ServerPort = 1234; 
+	final static int ServerPort = 1235; 
 	final static String Host = "localhost";
 	
 	@SuppressWarnings("resource")
@@ -27,43 +25,15 @@ public class Client {
        
 		// establish the connection 
 		Socket s = new Socket(ip, ServerPort); 
-
-		ClientPanel clientGui = new ClientPanel();
-		clientGui.setVisible(true);
+       
 		// obtaining input and out streams 
 		DataInputStream dis = new DataInputStream(s.getInputStream()); 
 		DataOutputStream dos = new DataOutputStream(s.getOutputStream()); 
+
 		
-		clientGui.setVisible(true);
-		// sendMessage thread 
-		Thread sendMessage = new Thread(new Runnable()  
-		{ 
-			private boolean exit = false;
-			// private String name;   could new Thread(___, name) above;
-			
-			@Override
-			public void run() {  
-				while (!exit) {
-
-					// read the message to deliver. 
-					String msg = scn.nextLine(); 
-                   
-					// write on the output stream 
-					try { 
-						dos.writeUTF(msg); 
-					} catch (IOException e) { 
-						System.out.println("Client, send message section - caught exception");
-						//e.printStackTrace();
-						exit = true;
-					} 
-				}	// end - while 
-				System.out.println("Client, thread sendMessage - run(), after while loop");
-			}	// end - method run 
-		});	// end - thread sendMessage
-
 		
 		// readMessage thread 
-		Thread readMessage = new Thread(new Runnable()  
+		Thread updateDisplay = new Thread(new Runnable()  
 		{ 
 			private boolean exit = false;
 			// private String name;   could new Thread(___, name) above;
@@ -85,8 +55,7 @@ public class Client {
 			}	// end - method run
 		});	// end - thread readMessage
 
-		sendMessage.start(); 
-		readMessage.start(); 
+		updateDisplay.start(); 
 
 	}	// end - method main 
 
