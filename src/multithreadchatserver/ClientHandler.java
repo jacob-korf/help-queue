@@ -5,78 +5,146 @@
  */
 package multithreadchatserver;
 
-import java.io.*; 
-import java.util.*; 
+import java.io.*;
+import java.util.*;
+
+import Gui.Request;
+
 import java.net.*;
+import java.sql.Timestamp;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 //ClientHandler class 
 class ClientHandler implements Runnable {
 	// data
-	//Scanner scn = new Scanner(System.in); 		// ???
-	//private String name; 							// client name
-	String name;									// client name
-	final DataInputStream dis; 						// input stream for this client
-	final DataOutputStream dos; 					// output stream for this client
-	Socket s; 										// socket for this client
-	boolean isloggedin; 							// flag, whether client is currently connected
-   
-	// constructor 
-	public ClientHandler(Socket s, String name, DataInputStream dis, DataOutputStream dos) { 
-		this.dis = dis; 
-		this.dos = dos; 
-		this.name = name; 
-		this.s = s; 
-		this.isloggedin = true; 
-	}	// end - constructor
+	// Scanner scn = new Scanner(System.in); // ???
+	// private String name; // client name
+	String name; // client name
+	final DataInputStream dis; // input stream for this client
+	final DataOutputStream dos; // output stream for this client
+	Socket s; // socket for this client
+	boolean isloggedin; // flag, whether client is currently connected
+
+	// constructor
+	public ClientHandler(Socket s, String name, DataInputStream dis, DataOutputStream dos) {
+		this.dis = dis;
+		this.dos = dos;
+		this.name = name;
+		this.s = s;
+		this.isloggedin = true;
+	} // end - constructor
 
 	// run method - called when thread starts
 	@Override
-	public void run() { 
-		String received; 
-		while (this.isloggedin)  
-		{ 
-			try
-			{ 
-				// receive the string 
-				received = dis.readUTF(); 
-				System.out.println(received); 
-             
-				// TODO: need to fully handle thread disconnecting; remove from server list
-				if(received.equals("logout")){ 
-					this.isloggedin = false; 
-					this.s.close(); 
-					break; 
-				} 
-               
-				// break the string into message and recipient part 
-				StringTokenizer st = new StringTokenizer(received, "#"); 
-				String MsgToSend = st.nextToken(); 
-				String recipient = st.nextToken(); 
+	public void run() {
+		while (this.isloggedin) {
+			// try {
+			// receive the string
+			String hh = "";
+			try {
+				hh = dis.readUTF();
 
-				// search for the recipient in the connected devices list from global Server class. 
-				// ar is the vector storing client of active users
-				// TODO: this search could be slow if large number of clients - could use HashMap
-				for (ClientHandler mc : Server.ar) { 
-					// if the recipient is found, write on its output stream 
-					if (mc.name.equals(recipient) && mc.isloggedin == true)  
-					{ 
-						mc.dos.writeUTF(this.name +" : "+ MsgToSend); 
-						break; 
-					} 
-				} 
-			} catch (IOException e) { 
-this.isloggedin = false;
-			} 
-		}	// end - while true 
-		
+				LocalDateTime current = LocalDateTime.now();
+				int position = 1;
+				for (int x = 0; x < Server.requestList.size(); x++) {
+					if (Server.requestList.get(x).getPosition() >= position) {
+						position = Server.requestList.get(x).getPosition() + 1;
+					}
+				}
+				if (hh.equals("Sent")) {
+					int pos = -1;
+					for (int x = 0; x < Server.requestList.size(); ++x) {
+						if (pos == -1) {
+							if (Server.requestList.get(x).getName().equals(this.name)) {
+								pos = x;
+							}
+						}
+
+					}
+					if (pos == -1) {
+						Server.requestList.add(new Request(this.name, current, position, 0));
+
+						for (DisplayHandler mc : Server.disAr) {
+							// if the recipient is found, write on its output stream
+							mc.update();
+						}
+
+						dos.writeUTF("Help Request is submitted");
+
+					} else {
+						dos.writeUTF("Help Request has already been submitted. User may only submit One help request.");
+
+					}
+
+				} else if (hh.equals("Cancel")) {
+					int pos = -1;
+					for (int x = 0; x < Server.requestList.size(); ++x) {
+						if (pos == -1) {
+							if (Server.requestList.get(x).getName().equals(this.name)) {
+								pos = x;
+							}
+						} else {
+							Server.requestList.get(x).lowerQueue();
+						}
+
+					}
+					if (pos > -1) {
+						Server.requestList.remove(pos);
+					}
+					for (DisplayHandler mc : Server.disAr) {
+						// if the recipient is found, write on its output stream
+						mc.update();
+					}
+					dos.writeUTF("Help Request is cancelled");
+				} else {
+					dos.writeUTF("Bad Input from Client");
+				}
+
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				this.isloggedin = false;
+			}
+
+			/*
+			 * } catch (IOException e) { this.isloggedin = false; }
+			 */
+		} // end - while true
+
 		// closing resources
-		try { 
-			this.dis.close(); 
-			this.dos.close(); 
-		} catch(IOException e) { 
+		try {
+			int pos = -1;
+			for (int x = 0; x < Server.requestList.size(); ++x) {
+				if (pos == -1) {
+					if (Server.requestList.get(x).getName().equals(this.name)) {
+						pos = x;
+					}
+				} else {
+					Server.requestList.get(x).lowerQueue();
+				}
+
+			}
+			if (pos > -1) {
+				Server.requestList.remove(pos);
+			}
+			for (DisplayHandler mc : Server.disAr) {
+				// if the recipient is found, write on its output stream
+				mc.update();
+			}
+			this.dis.close();
+			this.dos.close();
+			ClientHandler rem = null;
+			for (ClientHandler mc : Server.ar) {
+				// if the recipient is found, write on its output stream
+				if(this.name.equals(mc.name)) {
+					rem = mc;
+				}
+			}
+			Server.ar.remove(rem);
+		} catch (IOException e) {
 			System.out.println("ClientHandler, closing resources section");
-			e.printStackTrace(); 
-		} 
-	} 	// end - method run
-	
-}	// end - class ClientHandler
+			e.printStackTrace();
+		}
+	} // end - method run
+
+} // end - class ClientHandler

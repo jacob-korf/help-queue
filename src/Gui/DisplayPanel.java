@@ -1,135 +1,199 @@
 package Gui;
 
+import multithreadchatclient.Display;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.time.LocalTime;
+import java.io.IOException;
+import java.net.UnknownHostException;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import javax.swing.*;
 
 public class DisplayPanel extends JFrame {
 
-    private JTextArea currentClients = new JTextArea("Current Clients: ");
-    private JTextArea workstation = new JTextArea("WorkStation");
-    private JTextArea RequestTime = new JTextArea("RequestTime");
-    private JTextArea WaitTime = new JTextArea("WaitTime");
-    private JTextArea positionNumber = new JTextArea("PositionNumber");
-    private JTextField display0 = new JTextField();
-    private JTextField display1 = new JTextField();
-    private JTextField display2 = new JTextField();
-    private JTextField display3 = new JTextField();
-    private JTextField display4 = new JTextField();
-    long epoch = System.currentTimeMillis() / 1000;
-    String date = new java.text.SimpleDateFormat("HH:mm:ss").format(new java.util.Date(epoch * 1000));
+	private JLabel currentClients = new JLabel("Current Clients: ");
+	private JLabel workstation = new JLabel("WorkStation             ");
+	private JLabel RequestTime = new JLabel("RequestTime          ");
+	private JLabel WaitTime = new JLabel("WaitTime");
+	private JLabel positionNumber = new JLabel("PositionNumber     ");
+	private static JLabel clock = new JLabel();
+	private static JTextArea queue = null;
+	DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+	Date dateobj = new Date();
+	String date1 = df.format(dateobj);
+	static Display display;
+	private static Boolean connect = false;
 
+	public static void main(String[] args) {
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 
-    public DisplayPanel() {
-        super("Help Queue Display");
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				// new ClientPanel().setVisible(true);
+				DisplayPanel displaygui;
+				try {
+					displaygui = new DisplayPanel();
+					displaygui.setVisible(true);
 
-        // create a new panel with GridBagLayout manager
-        JPanel newPanel = new JPanel(new GridBagLayout());
+					if (connect) {
+						Thread readMessage = new Thread(new Runnable() {
 
+							@Override
+							public void run() {
+								while (true) {
+									String queueText = display.getRequest();
+									if(queueText.equals("Failure")) {
+										queue.setText("Unsuccessful Connection to Server");
+										disconnect();
+									} else {
+									queue.setText(queueText);
+									}
+								}
+							} // end - method run
+						}); // end - thread readMessage
+						 Thread updateClock = new Thread(new Runnable() {
+			                    @Override
+			                    public void run() {
+			                        while (true) {
+			                            try {
+			                                Thread.sleep(1000);
+			                            } catch (InterruptedException e) {
+			                                // TODO Auto-generated catch block
+			                                e.printStackTrace();
+			                            }
+			                            LocalDateTime current = LocalDateTime.now();
+			                            setClock(current);
+			                        }
+			                    } // end - method run
+			                }); // end - thread readMessage
 
-        GridBagConstraints constraints = new GridBagConstraints();
-        constraints.anchor = GridBagConstraints.CENTER;
-        constraints.insets = new Insets(10, 10, 10, 10);
+			          updateClock.start();
+			          readMessage.start();
 
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        constraints.gridwidth = 1;
-        constraints.gridheight = 1;
-        constraints.anchor = GridBagConstraints.WEST;
-        newPanel.add(currentClients, constraints);
+			
+					}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 
-        constraints.gridx = 0;
-        constraints.gridy = 1;
-        constraints.gridwidth = 1;
-        constraints.gridheight = 1;
-        constraints.anchor = GridBagConstraints.WEST;
-        newPanel.add(positionNumber, constraints);
+				// new DisplayPanel().repaint();
+			}
+		});
 
-        constraints.gridx = 1;
-        constraints.gridy = 1;
-        constraints.gridwidth = 1;
-        constraints.gridheight = 1;
-        constraints.anchor = GridBagConstraints.WEST;
-        newPanel.add(workstation, constraints);
+	}
 
-        constraints.gridx = 2;
-        constraints.gridy = 1;
-        constraints.gridwidth = 1;
-        constraints.gridheight = 1;
-        constraints.anchor = GridBagConstraints.WEST;
-        newPanel.add(RequestTime, constraints);
+	public static void disconnect() {
 
-        constraints.gridx = 3;
-        constraints.gridy = 1;
-        constraints.gridwidth = 1;
-        constraints.gridheight = 1;
-        constraints.anchor = GridBagConstraints.WEST;
-        newPanel.add(WaitTime, constraints);
+		Timer timer = new Timer(6000, (ActionListener) new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		});
+		timer.start();
+	}
 
-        constraints.gridx = 0;
-        constraints.gridy = 2;
-        constraints.gridwidth = 7;
-        constraints.gridheight = 1;
-        constraints.anchor = GridBagConstraints.WEST;
-        display0.setColumns(60);
-        newPanel.add(display0, constraints);
+	public DisplayPanel() throws UnknownHostException, IOException {
 
-        constraints.gridx = 0;
-        constraints.gridy = 3;
-        constraints.gridwidth = 7;
-        constraints.gridheight = 1;
-        constraints.anchor = GridBagConstraints.WEST;
-        display1.setColumns(60);
-        newPanel.add(display1, constraints);
+		super("Help Queue Display");
+		display = new Display();
+		connect = display.connect();
+		// create a new panel with GridBagLayout manager
+		JPanel newPanel = new JPanel(new GridBagLayout());
+		
+		GridBagConstraints constraints = new GridBagConstraints();
+		constraints.anchor = GridBagConstraints.CENTER;
+		constraints.insets = new Insets(10, 10, 10, 10);
 
-        constraints.gridx = 0;
-        constraints.gridy = 4;
-        constraints.gridwidth = 7;
-        constraints.gridheight = 1;
-        constraints.anchor = GridBagConstraints.WEST;
-        display2.setColumns(60);
-        newPanel.add(display2, constraints);
+		constraints.gridx = 0;
+		constraints.gridy = 0;
+		constraints.gridwidth = 2;
+		constraints.gridheight = 1;
+		constraints.anchor = GridBagConstraints.WEST;
+		newPanel.add(clock, constraints);
+		
+		constraints.gridx = 0;
+		constraints.gridy = 1;
+		constraints.gridwidth = 1;
+		constraints.gridheight = 1;
+		constraints.anchor = GridBagConstraints.WEST;
+		newPanel.add(currentClients, constraints);
 
-        constraints.gridx = 0;
-        constraints.gridy = 5;
-        constraints.gridwidth = 7;
-        constraints.gridheight = 1;
-        constraints.anchor = GridBagConstraints.WEST;
-        display3.setColumns(60);
-        newPanel.add(display3, constraints);
+		constraints.gridx = 0;
+		constraints.gridy = 2;
+		constraints.gridwidth = 1;
+		constraints.gridheight = 1;
+		constraints.anchor = GridBagConstraints.WEST;
+		newPanel.add(positionNumber, constraints);
 
-        constraints.gridx = 0;
-        constraints.gridy = 6;
-        constraints.gridwidth = 7;
-        constraints.gridheight = 1;
-        constraints.anchor = GridBagConstraints.WEST;
-        display4.setColumns(60);
-        newPanel.add(display4, constraints);
+		constraints.gridx = 1;
+		constraints.gridy = 2;
+		constraints.gridwidth = 1;
+		constraints.gridheight = 1;
+		constraints.anchor = GridBagConstraints.WEST;
+		newPanel.add(workstation, constraints);
 
-        setDisplay();
+		constraints.gridx = 2;
+		constraints.gridy = 2;
+		constraints.gridwidth = 1;
+		constraints.gridheight = 1;
+		constraints.anchor = GridBagConstraints.WEST;
+		newPanel.add(RequestTime, constraints);
 
-        // set border for the panel
-        newPanel.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createEtchedBorder(), "Philips 115 Lab " + date));
+		constraints.gridx = 3;
+		constraints.gridy = 2;
+		constraints.gridwidth = 1;
+		constraints.gridheight = 1;
+		constraints.anchor = GridBagConstraints.WEST;
+		newPanel.add(WaitTime, constraints);
 
-        int delay = 1000;
-        ActionListener update = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                date = new java.text.SimpleDateFormat("HH:mm:ss").format(new java.util.Date(System.currentTimeMillis()));
-            }
-        };
-        new Timer(delay, update).start();
-        // add the panel to this frame
-        add(newPanel);
+		constraints.gridx = 0;
+		constraints.gridy = 3;
+		constraints.gridwidth = 7;
+		constraints.gridheight = 1;
+		constraints.anchor = GridBagConstraints.WEST;
+		
+		queue = new JTextArea(10, 70);
+		queue.setBounds(320, 75, 260, 260);
+		newPanel.add(queue, constraints);
+		queue.setEditable(false);
 
-        pack();
-        setLocationRelativeTo(null);
-    }
+		// set border for the panel
+		newPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
+				"Philips 115 Lab:"));
 
-    public void setDisplay() {
-        display0.setText(" things  ");
-    }
+		// add the panel to this frame
+		add(newPanel);
+
+		pack();
+		setLocationRelativeTo(null);
+		if (!connect) {
+			queue.setText("Unsuccessful Connection to Server");
+			disconnect();
+		}
+
+	}
+	 @Override
+	    public Dimension getPreferredSize() {
+	        return new Dimension(700, 400);
+	    }
+	public static void setClock(LocalDateTime current){
+	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+	    String formatDateTime = current.format(formatter);
+	    clock.setText("Time: " + formatDateTime);
+	}
 }
