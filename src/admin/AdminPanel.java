@@ -8,6 +8,8 @@ import java.net.UnknownHostException;
 
 import javax.swing.*;
 
+import multithreadchatclient.Admin;
+
 
 public class AdminPanel extends JFrame {
 
@@ -17,13 +19,14 @@ public class AdminPanel extends JFrame {
 	private JButton setCalendar = new JButton("Submit");
 	private JLabel cancelLabel = new JLabel("Cancel workstation request: ");
 	private JLabel calendarLabel = new JLabel("Set new course: ");
-	private JTextArea cancelText = new JTextArea();
-	private JTextArea calendarText = new JTextArea();
+	private JTextArea cancelText = new JTextArea("");
+	private JTextArea calendarText = new JTextArea("");
 	private JLabel messageLogger = new JLabel("Admin application opened successfuly");
+	private Admin admin;
 
 	public AdminPanel() throws UnknownHostException, IOException {
 		super("Admin Help Request");
-
+		admin = new Admin();
 		// create a new panel with GridBagLayout manager
 		JPanel newPanel = new JPanel(new GridBagLayout());
 		connectServer.setBackground(Color.GREEN);
@@ -92,7 +95,10 @@ public class AdminPanel extends JFrame {
 		constraints.gridwidth = 2;
 		constraints.anchor = GridBagConstraints.WEST;
 		newPanel.add(messageLogger, constraints);
-		//HelpRequest.addActionListener(this::helpAction);
+		connectServer.addActionListener(this::connectAction);
+		initHelp.addActionListener(this::resetAction);
+		cancelWork.addActionListener(this::cancelAction);
+		setCalendar.addActionListener(this::calendarAction);
 		//cancelHelpRequest.addActionListener(this::cancelAction);
 		// set border for the panel
 		newPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Admin Application"));
@@ -124,10 +130,21 @@ public class AdminPanel extends JFrame {
 		timer.start();
 	}
 
-	public void helpAction(ActionEvent e) {
+	public void connectAction(ActionEvent e) {
+		admin.connect();
+		messageLogger.setText("Successful Connection to Server");
+	}
+
+	public void resetAction(ActionEvent e) {
+		admin.resetList();
+		messageLogger.setText("Help Queue Initialized/Re-initialized");
+	}
+	public void calendarAction(ActionEvent e) {
 	}
 
 	public void cancelAction(ActionEvent e) {
+		String str = admin.cancelRequest(cancelText.getText());
+		messageLogger.setText(str);
 	}
 
 	public static void main(String[] args) throws UnknownHostException, IOException {

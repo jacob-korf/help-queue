@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.time.LocalDateTime;
 
 import javax.swing.*;
 
@@ -16,11 +17,27 @@ public class ClientPanel extends JFrame {
 	private JButton HelpRequest = new JButton("Submit Help Request");
 	private JLabel textField = new JLabel();
 	private Client client;
+	private Boolean submitted = false;
 
 	public ClientPanel() throws UnknownHostException, IOException {
 		super("Client Help Request");
 		client = new Client();
+		Thread updateClock = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while (true) {
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					update();
+				}
+			} // end - method run
+		}); // end - thread readMessage
 
+		updateClock.start();
 		// create a new panel with GridBagLayout manager
 		JPanel newPanel = new JPanel(new GridBagLayout());
 		cancelHelpRequest.setBackground(Color.WHITE);
@@ -90,6 +107,7 @@ public class ClientPanel extends JFrame {
 			textField.setText("Unsuccessful Connection to Server");
 			disconnect();
 		} else {
+			submitted = true;
 			textField.setText(completed);
 			cancelHelpRequest.setBackground(Color.RED);
 			HelpRequest.setBackground(Color.WHITE);
@@ -105,13 +123,33 @@ public class ClientPanel extends JFrame {
 			disconnect();
 		} else {
 			textField.setText(cancelled);
-
-			cancelHelpRequest.setBackground(Color.WHITE);
-			HelpRequest.setBackground(Color.GREEN);
-			HelpRequest.setEnabled(true);
-			cancelHelpRequest.setEnabled(false);
+			cancelRequest();
 		}
 	}
+
+	public void cancelRequest() {
+		submitted = false;
+		cancelHelpRequest.setBackground(Color.WHITE);
+		HelpRequest.setBackground(Color.GREEN);
+		HelpRequest.setEnabled(true);
+		cancelHelpRequest.setEnabled(false);
+	}
+
+	public void update() {
+		if (submitted) {
+			String update = client.update();
+			if (update.equals("Failure")) {
+				textField.setText("Unsuccessful Connection to Server");
+				disconnect();
+			} else if(update.equals("Cancel")){
+				
+				textField.setText("Help Request Forcefully Removed by Administrator");
+				cancelRequest();
+			}
+		}
+	}
+
+	
 
 	public static void main(String[] args) throws UnknownHostException, IOException {
 		ClientPanel app = new ClientPanel();

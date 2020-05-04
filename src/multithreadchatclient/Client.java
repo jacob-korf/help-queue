@@ -105,4 +105,16 @@ public class Client {
 		
 	}
 
+	public String update() {
+		// TODO Auto-generated method stub
+
+		try {
+		dos.writeUTF("Update");
+
+			return dis.readUTF();
+		} catch (IOException e) {
+			return "Failure";
+		}
+	}
+
 } // end - class Client

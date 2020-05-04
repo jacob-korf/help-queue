@@ -97,6 +97,20 @@ class ClientHandler implements Runnable {
 						mc.update();
 					}
 					dos.writeUTF("Help Request is cancelled");
+				} 
+				else if (hh.equals("Update")) {
+					int pos = -1;
+					for (int x = 0; x < Server.requestList.size(); ++x) {
+							if (Server.requestList.get(x).getName().equals(this.name)) {
+								pos = 1;
+							}
+
+					}
+					if(pos==-1) {
+					dos.writeUTF("Cancel"); 
+					} else {
+						dos.writeUTF("No changes");
+					}
 				} else {
 					dos.writeUTF("Bad Input from Client");
 				}
@@ -146,5 +160,9 @@ class ClientHandler implements Runnable {
 			e.printStackTrace();
 		}
 	} // end - method run
+
+	public void cancel() {
+
+	}
 
 } // end - class ClientHandler

@@ -55,35 +55,36 @@ public class DisplayPanel extends JFrame {
 							public void run() {
 								while (true) {
 									String queueText = display.getRequest();
-									if(queueText.equals("Failure")) {
+									if (queueText.equals("Failure")) {
 										queue.setText("Unsuccessful Connection to Server");
 										disconnect();
+									} else if (queueText.equals("")) {
+										queue.setText("No Current Help Requests");
 									} else {
-									queue.setText(queueText);
+										queue.setText(queueText);
 									}
 								}
 							} // end - method run
 						}); // end - thread readMessage
-						 Thread updateClock = new Thread(new Runnable() {
-			                    @Override
-			                    public void run() {
-			                        while (true) {
-			                            try {
-			                                Thread.sleep(1000);
-			                            } catch (InterruptedException e) {
-			                                // TODO Auto-generated catch block
-			                                e.printStackTrace();
-			                            }
-			                            LocalDateTime current = LocalDateTime.now();
-			                            setClock(current);
-			                        }
-			                    } // end - method run
-			                }); // end - thread readMessage
+						Thread updateClock = new Thread(new Runnable() {
+							@Override
+							public void run() {
+								while (true) {
+									try {
+										Thread.sleep(1000);
+									} catch (InterruptedException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+									LocalDateTime current = LocalDateTime.now();
+									setClock(current);
+								}
+							} // end - method run
+						}); // end - thread readMessage
 
-			          updateClock.start();
-			          readMessage.start();
+						updateClock.start();
+						readMessage.start();
 
-			
 					}
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -114,7 +115,7 @@ public class DisplayPanel extends JFrame {
 		connect = display.connect();
 		// create a new panel with GridBagLayout manager
 		JPanel newPanel = new JPanel(new GridBagLayout());
-		
+
 		GridBagConstraints constraints = new GridBagConstraints();
 		constraints.anchor = GridBagConstraints.CENTER;
 		constraints.insets = new Insets(10, 10, 10, 10);
@@ -125,7 +126,7 @@ public class DisplayPanel extends JFrame {
 		constraints.gridheight = 1;
 		constraints.anchor = GridBagConstraints.WEST;
 		newPanel.add(clock, constraints);
-		
+
 		constraints.gridx = 0;
 		constraints.gridy = 1;
 		constraints.gridwidth = 1;
@@ -166,15 +167,14 @@ public class DisplayPanel extends JFrame {
 		constraints.gridwidth = 7;
 		constraints.gridheight = 1;
 		constraints.anchor = GridBagConstraints.WEST;
-		
+
 		queue = new JTextArea(10, 70);
 		queue.setBounds(320, 75, 260, 260);
 		newPanel.add(queue, constraints);
 		queue.setEditable(false);
 
 		// set border for the panel
-		newPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
-				"Philips 115 Lab:"));
+		newPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Philips 115 Lab:"));
 
 		// add the panel to this frame
 		add(newPanel);
@@ -187,13 +187,15 @@ public class DisplayPanel extends JFrame {
 		}
 
 	}
-	 @Override
-	    public Dimension getPreferredSize() {
-	        return new Dimension(700, 400);
-	    }
-	public static void setClock(LocalDateTime current){
-	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-	    String formatDateTime = current.format(formatter);
-	    clock.setText("Time: " + formatDateTime);
+
+	@Override
+	public Dimension getPreferredSize() {
+		return new Dimension(700, 400);
+	}
+
+	public static void setClock(LocalDateTime current) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		String formatDateTime = current.format(formatter);
+		clock.setText("Time: " + formatDateTime);
 	}
 }
