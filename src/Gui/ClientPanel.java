@@ -108,7 +108,7 @@ public class ClientPanel extends JFrame {
 			disconnect();
 		} else {
 			submitted = true;
-			textField.setText(completed);
+			textField.setText("Help Request successfully sent to queue");
 			cancelHelpRequest.setBackground(Color.RED);
 			HelpRequest.setBackground(Color.WHITE);
 			HelpRequest.setEnabled(false);
@@ -122,7 +122,7 @@ public class ClientPanel extends JFrame {
 			textField.setText("Unsuccessful Connection to Server");
 			disconnect();
 		} else {
-			textField.setText(cancelled);
+			textField.setText("Help request successfully cancelled from queue");
 			cancelRequest();
 		}
 	}

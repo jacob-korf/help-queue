@@ -19,7 +19,7 @@ import javax.swing.*;
 
 public class DisplayPanel extends JFrame {
 
-	private JLabel currentClients = new JLabel("Current Clients: ");
+	private static JLabel currentClients = new JLabel("Current Client: ");
 	private JLabel workstation = new JLabel("WorkStation             ");
 	private JLabel RequestTime = new JLabel("RequestTime          ");
 	private JLabel WaitTime = new JLabel("WaitTime");
@@ -55,13 +55,16 @@ public class DisplayPanel extends JFrame {
 							public void run() {
 								while (true) {
 									String queueText = display.getRequest();
+									//System.out.println(queueText);
 									if (queueText.equals("Failure")) {
 										queue.setText("Unsuccessful Connection to Server");
 										disconnect();
-									} else if (queueText.equals("")) {
+									} else if (queueText.substring(queueText.indexOf("###")+3).equals("")) {
 										queue.setText("No Current Help Requests");
+										currentClients.setText("Current Course: " + queueText.substring(0, queueText.indexOf("###")));
 									} else {
-										queue.setText(queueText);
+										queue.setText(queueText.substring(queueText.indexOf("###")+3));
+										currentClients.setText("Current Course: " + queueText.substring(0, queueText.indexOf("###")));
 									}
 								}
 							} // end - method run
@@ -129,7 +132,7 @@ public class DisplayPanel extends JFrame {
 
 		constraints.gridx = 0;
 		constraints.gridy = 1;
-		constraints.gridwidth = 1;
+		constraints.gridwidth = 4;
 		constraints.gridheight = 1;
 		constraints.anchor = GridBagConstraints.WEST;
 		newPanel.add(currentClients, constraints);

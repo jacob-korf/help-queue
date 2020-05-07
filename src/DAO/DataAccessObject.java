@@ -6,6 +6,7 @@
  */
 package DAO;
 import java.sql.*;
+import java.util.ArrayList;
 
 public class DataAccessObject {
 
@@ -106,6 +107,34 @@ public class DataAccessObject {
             System.err.println(npe.getMessage());
         }
         return resultString;
+    }	// end - method processResultSet
+    public ArrayList<String> processResultSetArray () {
+        // --- 4) process result set, only applicable if executing an SQL SELECT statement
+        ResultSetMetaData rsmd = null;		// result set metadata object
+        int columnCount = -1;				// column count
+        ArrayList<String> resultArray = new ArrayList<String>();
+        try {
+            rsmd = daoRset.getMetaData();
+
+            // get number of columns from result set metadata
+            columnCount = rsmd.getColumnCount();
+
+            // row processing of result set
+            while (daoRset.next()) {
+                for (int index = 1; index <= columnCount; index++) {
+                    resultArray.add(daoRset.getString(index));
+                };
+            }
+        }
+        catch (SQLException sqle) {
+            System.err.println("Error in processing result set");
+            System.err.println(sqle.getMessage());
+        }
+        catch (NullPointerException npe) {
+            System.err.println("DAO, processResultSet() - no result set generated");
+            System.err.println(npe.getMessage());
+        }
+        return resultArray;
     }	// end - method processResultSet
 
     // --- setAutoCommit(flag) - set autocommit on or off based on flag

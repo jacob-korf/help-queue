@@ -29,15 +29,16 @@ class DisplayHandler implements Runnable {
 
 	}
 
-	public Boolean update() {
+	public Boolean update(String courseName) {
 		String queueText = "";
 		for (int x = 0; x < Server.requestList.size(); ++x) {
 			if (x < 10) {
 				queueText += Server.requestList.get(x).toString() + "\n";
 			}
 		}
+		System.out.println(queueText);
 		try {
-			dos.writeUTF(queueText);
+			dos.writeUTF(courseName + "###" + queueText);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			try {
@@ -51,4 +52,6 @@ class DisplayHandler implements Runnable {
 		}
 		return true;
 	}
+
+
 } // end - class ClientHandler

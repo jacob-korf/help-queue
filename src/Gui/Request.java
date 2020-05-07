@@ -40,4 +40,10 @@ public class Request {
 	public int getPosition() {
 		return queueNumber;
 	}
+	public int getWaitTime() {
+		return waitTime;
+	}
+	public LocalDateTime getRequestTime() {
+		return requestTime;
+	}
 }

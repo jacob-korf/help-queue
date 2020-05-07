@@ -11,7 +11,7 @@ import java.net.*;
 
 public class Client {
 	// data
-	final static int ServerPort = 1234;
+	final static int ServerPort = 3014;
 	final static String Host = "localhost";
 	private Socket s;
 	private DataInputStream dis;

@@ -84,7 +84,7 @@ public class AdminPanel extends JFrame {
 		endTime.setText("");
 		endTime.setFocusLostBehavior(JFormattedTextField.COMMIT);
 		
-		NumberFormat customFormat = NumberFormat.getIntegerInstance();
+		NumberFormat customFormat = NumberFormat.getIntegerInstance(); 
 		sectionNumber.setValue(new NumberFormatter(customFormat));
 		sectionNumber.setText("");
 		sectionNumber.setFocusLostBehavior(JFormattedTextField.COMMIT);
@@ -457,7 +457,7 @@ public class AdminPanel extends JFrame {
 	   
 		if(i == 6 && daySelected) {
 	       
-				String que = "INSERT INTO calendar (courseNumber, sectionNumber, startDate, endDate, startTime, endTime, daysOfTheWeek) values ('" + courseNumber.getText() + "', '"
+				String que = "INSERT INTO calendar (unique_id, courseNumber, sectionNumber, startDate, endDate, startTime, endTime, daysOfTheWeek) values (cal_seq.nextval, '" + courseNumber.getText() + "', '"
 						+ sectionNumber.getText() +"',   TO_DATE('"+ startDate.getText() + "', 'MM/dd/yyyy'), TO_DATE('"+ endDate.getText() + "', 'MM/dd/yyyy'), TO_DATE('" + startTime.getText()
 						 + "', 'HH24:MI'), TO_DATE('" + endTime.getText() + "', 'HH24:MI'), '" + day + "' )";
 				String response = admin.getQuery(que); 
@@ -480,8 +480,9 @@ public class AdminPanel extends JFrame {
 
 		AdminPanel app = new AdminPanel();
 		app.setVisible(true);
-		//LocalDateTime now = new LocalDateTime().now();
-		//System.out.println(now);
+		LocalDateTime now = LocalDateTime.now();
+		System.out.println(now);
+		
 		
 	}
 }
