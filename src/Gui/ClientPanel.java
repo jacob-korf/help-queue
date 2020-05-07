@@ -13,6 +13,10 @@ import multithreadchatclient.Client;
 
 public class ClientPanel extends JFrame {
 
+	/**
+	 * comments max
+	 */
+
 	private JButton cancelHelpRequest = new JButton("Cancel Help Request");
 	private JButton HelpRequest = new JButton("Submit Help Request");
 	private JLabel textField = new JLabel();

@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="4b01f55c-7021-44f5-bfb7-0c05b3247e6a" name="Default Changelist" comment="" />
+    <list default="true" id="4b01f55c-7021-44f5-bfb7-0c05b3247e6a" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Gui/ClientPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Gui/ClientPanel.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -85,7 +88,8 @@
       <workItem from="1588811757530" duration="480000" />
       <workItem from="1588870785019" duration="304000" />
       <workItem from="1588880323285" duration="142000" />
-      <workItem from="1588880474304" duration="723000" />
+      <workItem from="1588880474304" duration="917000" />
+      <workItem from="1588883692187" duration="86000" />
     </task>
     <servers />
   </component>
@@ -98,10 +102,10 @@
     </state>
     <state x="350" y="-1080" key="#Project_Structure/0.0.1280.680/0.-1080.1920.1040@0.-1080.1920.1040" timestamp="1588812024511" />
     <state x="233" y="0" key="#Project_Structure/0.0.1280.680/0.-1080.1920.1040@0.0.1280.680" timestamp="1588807762972" />
-    <state x="735" y="-728" key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog" timestamp="1588883548552">
+    <state x="735" y="-728" key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog" timestamp="1588883720258">
       <screen x="0" y="-1080" width="1920" height="1040" />
     </state>
-    <state x="735" y="-728" key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog/0.0.1280.680/0.-1080.1920.1040@0.-1080.1920.1040" timestamp="1588883548552" />
+    <state x="735" y="-728" key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog/0.0.1280.680/0.-1080.1920.1040@0.-1080.1920.1040" timestamp="1588883720258" />
     <state x="490" y="230" key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog/0.0.1280.680/0.-1080.1920.1040@0.0.1280.680" timestamp="1588807363293" />
     <state x="545" y="-935" key="FileChooserDialogImpl" timestamp="1588870956669">
       <screen x="0" y="-1080" width="1920" height="1040" />
