@@ -9,7 +9,7 @@ import java.io.*;
 import java.util.*;
 import java.net.*;
 
-//ClientHandler class 
+//DisplayHandler class
 class DisplayHandler implements Runnable {
 	String name; // client name
 	final DataInputStream dis; // input stream for this client
@@ -30,22 +30,21 @@ class DisplayHandler implements Runnable {
 	}
 
 	public Boolean update(String courseName) {
+		// updating the data in the display
 		String queueText = "";
 		for (int x = 0; x < Server.requestList.size(); ++x) {
 			if (x < 10) {
 				queueText += Server.requestList.get(x).toString() + "\n";
 			}
 		}
-		System.out.println(queueText);
 		try {
+			// writes course name and queue text written out in a string
 			dos.writeUTF(courseName + "###" + queueText);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			try {
 				this.dis.close();
 				this.dos.close();
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			return false;
@@ -54,4 +53,4 @@ class DisplayHandler implements Runnable {
 	}
 
 
-} // end - class ClientHandler
+} // end - class DisplayHandler

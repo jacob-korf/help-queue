@@ -13,10 +13,6 @@ import multithreadchatclient.Client;
 
 public class ClientPanel extends JFrame {
 
-	/**
-	 * comments max
-	 */
-
 	private JButton cancelHelpRequest = new JButton("Cancel Help Request");
 	private JButton HelpRequest = new JButton("Submit Help Request");
 	private JLabel textField = new JLabel();
@@ -27,6 +23,7 @@ public class ClientPanel extends JFrame {
 		super("Client Help Request");
 		client = new Client();
 		Thread updateClock = new Thread(new Runnable() {
+			// updates every second
 			@Override
 			public void run() {
 				while (true) {
@@ -81,6 +78,7 @@ public class ClientPanel extends JFrame {
 
 		pack();
 		setLocationRelativeTo(null);
+		// check if client successfully connected to server
 		Boolean connect = client.connect();
 		this.setVisible(true);
 		if (connect) {
@@ -93,6 +91,7 @@ public class ClientPanel extends JFrame {
 	}
 
 	public void disconnect() {
+		// disconnect
 		HelpRequest.setEnabled(false);
 		cancelHelpRequest.setEnabled(false);
 
@@ -106,6 +105,7 @@ public class ClientPanel extends JFrame {
 	}
 
 	public void helpAction(ActionEvent e) {
+		// submission of the client help request
 		String completed = client.sendRequest();
 		if (completed.equals("Failure")) {
 			textField.setText("Unsuccessful Connection to Server");
@@ -113,40 +113,44 @@ public class ClientPanel extends JFrame {
 		} else {
 			submitted = true;
 			textField.setText("Help Request successfully sent to queue");
-			cancelHelpRequest.setBackground(Color.RED);
-			HelpRequest.setBackground(Color.WHITE);
-			HelpRequest.setEnabled(false);
-			cancelHelpRequest.setEnabled(true);
+			cancelHelpRequest.setBackground(Color.RED); // cancel button set to red showing it can be canceled
+			HelpRequest.setBackground(Color.WHITE);  // help request set to white showing request was made
+			HelpRequest.setEnabled(false); // disable help request button
+			cancelHelpRequest.setEnabled(true); // enable cancel button
 		}
 	}
 
 	public void cancelAction(ActionEvent e) {
 		String cancelled = client.cancelRequest();
 		if (cancelled.equals("Failure")) {
+			// failed cancel
 			textField.setText("Unsuccessful Connection to Server");
 			disconnect();
 		} else {
+			// successful cancel
 			textField.setText("Help request successfully cancelled from queue");
 			cancelRequest();
 		}
 	}
 
 	public void cancelRequest() {
+		// cancel of the help request
 		submitted = false;
-		cancelHelpRequest.setBackground(Color.WHITE);
-		HelpRequest.setBackground(Color.GREEN);
-		HelpRequest.setEnabled(true);
-		cancelHelpRequest.setEnabled(false);
+		cancelHelpRequest.setBackground(Color.WHITE); // set cancel button to white showing request was canceled
+		HelpRequest.setBackground(Color.GREEN); // set help request button to green so they can make a new request
+		HelpRequest.setEnabled(true); // enable help request button
+		cancelHelpRequest.setEnabled(false); // disable cancel help request button
 	}
 
 	public void update() {
+		// update of client if its help request is cancelled by the admin
 		if (submitted) {
 			String update = client.update();
 			if (update.equals("Failure")) {
 				textField.setText("Unsuccessful Connection to Server");
 				disconnect();
 			} else if(update.equals("Cancel")){
-				
+				// admin removed help request
 				textField.setText("Help Request Forcefully Removed by Administrator");
 				cancelRequest();
 			}

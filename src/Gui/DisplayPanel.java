@@ -26,9 +26,6 @@ public class DisplayPanel extends JFrame {
 	private JLabel positionNumber = new JLabel("PositionNumber     ");
 	private static JLabel clock = new JLabel();
 	private static JTextArea queue = null;
-	DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
-	Date dateobj = new Date();
-	String date1 = df.format(dateobj);
 	static Display display;
 	private static Boolean connect = false;
 
@@ -42,34 +39,33 @@ public class DisplayPanel extends JFrame {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				// new ClientPanel().setVisible(true);
 				DisplayPanel displaygui;
 				try {
 					displaygui = new DisplayPanel();
 					displaygui.setVisible(true);
-
+					// if connected
 					if (connect) {
 						Thread readMessage = new Thread(new Runnable() {
-
 							@Override
 							public void run() {
 								while (true) {
+									// getting the help request
 									String queueText = display.getRequest();
-									//System.out.println(queueText);
 									if (queueText.equals("Failure")) {
 										queue.setText("Unsuccessful Connection to Server");
 										disconnect();
-									} else if (queueText.substring(queueText.indexOf("###")+3).equals("")) {
+									} else if (queueText.substring(queueText.indexOf("###")+3).equals("")) { // check if no current help requests
 										queue.setText("No Current Help Requests");
-										currentClients.setText("Current Course: " + queueText.substring(0, queueText.indexOf("###")));
+										currentClients.setText("Current Course: " + queueText.substring(0, queueText.indexOf("###"))); // setting the current course on the display
 									} else {
-										queue.setText(queueText.substring(queueText.indexOf("###")+3));
-										currentClients.setText("Current Course: " + queueText.substring(0, queueText.indexOf("###")));
+										queue.setText(queueText.substring(queueText.indexOf("###")+3)); // help request exists
+										currentClients.setText("Current Course: " + queueText.substring(0, queueText.indexOf("###"))); // setting the current course on the display
 									}
 								}
 							} // end - method run
 						}); // end - thread readMessage
 						Thread updateClock = new Thread(new Runnable() {
+							// updates the display clock time every second
 							@Override
 							public void run() {
 								while (true) {
@@ -79,29 +75,25 @@ public class DisplayPanel extends JFrame {
 										// TODO Auto-generated catch block
 										e.printStackTrace();
 									}
+									// getting the current time and setting it in the clock
 									LocalDateTime current = LocalDateTime.now();
 									setClock(current);
 								}
 							} // end - method run
 						}); // end - thread readMessage
-
 						updateClock.start();
 						readMessage.start();
-
 					}
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-
-				// new DisplayPanel().repaint();
 			}
 		});
 
 	}
 
 	public static void disconnect() {
-
 		Timer timer = new Timer(6000, (ActionListener) new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -123,6 +115,7 @@ public class DisplayPanel extends JFrame {
 		constraints.anchor = GridBagConstraints.CENTER;
 		constraints.insets = new Insets(10, 10, 10, 10);
 
+		// Adding all display components to the gui
 		constraints.gridx = 0;
 		constraints.gridy = 0;
 		constraints.gridwidth = 2;
@@ -190,13 +183,14 @@ public class DisplayPanel extends JFrame {
 		}
 
 	}
-
+	// getting preferred size for the display.
 	@Override
 	public Dimension getPreferredSize() {
 		return new Dimension(700, 400);
 	}
 
 	public static void setClock(LocalDateTime current) {
+		// setting the clock initial time.
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		String formatDateTime = current.format(formatter);
 		clock.setText("Time: " + formatDateTime);

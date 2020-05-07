@@ -21,28 +21,31 @@ public class Request {
 		this.waitTime = waitTime;
 	}
 	public String toString() {
-		 //LocalDateTime d = new LocalDateTime(waitTime.g);
-	    
 		        DecimalFormat formatM = new DecimalFormat("000");
 		        DecimalFormat formatS = new DecimalFormat("00");
-		        
+		// returning string for help request
 		return queueNumber + "            " + workstation+ "     "+formatS.format(requestTime.getHour()) + ":" + formatS.format(requestTime.getMinute()) + ":" +formatS.format(requestTime.getSecond()) + "      "  + formatM.format(waitTime/60) + ":" + formatS.format(waitTime%60);
 	}
+	// calculating wait time
 	public void updateTime(LocalDateTime updatedTime) {
 		  waitTime = 3600*(updatedTime.getHour()-requestTime.getHour()) + 60*(updatedTime.getMinute()-requestTime.getMinute()) + updatedTime.getSecond()-requestTime.getSecond();
 	}
 	public void lowerQueue() {
 		queueNumber--;
 	}
+	// return workstation name
 	public String getName() {
 		return workstation;
 	}
+	// return position number
 	public int getPosition() {
 		return queueNumber;
 	}
+	// return  wait time
 	public int getWaitTime() {
 		return waitTime;
 	}
+	// return help request time
 	public LocalDateTime getRequestTime() {
 		return requestTime;
 	}

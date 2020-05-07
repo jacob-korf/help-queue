@@ -43,6 +43,7 @@ public class Display {
 	}
 
 	public String getRequest() {
+		// sends request to display
 		String msg = "";
 		try {
 			// read the message sent to this client
@@ -55,4 +56,4 @@ public class Display {
 	}
 	
 
-} // end - class Client
+} // end - class Display
