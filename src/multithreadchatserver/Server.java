@@ -10,6 +10,7 @@ import Gui.Request;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InterruptedIOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -51,11 +52,11 @@ public class Server {
 
 	public static void main(String[] args) throws IOException {
 		System.out.println("Server started Suceessfully");
-		ServerSocket ss = new ServerSocket(1234);
+		ServerSocket ss = new ServerSocket(3014);
 		ss.setSoTimeout(100);
-		ServerSocket displaySS = new ServerSocket(1235);
+		ServerSocket displaySS = new ServerSocket(3015);
 		displaySS.setSoTimeout(100);
-		ServerSocket Adminss = new ServerSocket(1236);
+		ServerSocket Adminss = new ServerSocket(3016);
 		Adminss.setSoTimeout(100);
 		Thread updateTime = new Thread(new Runnable() {
 			public void run() {
@@ -95,7 +96,7 @@ public class Server {
 				DataInputStream dis = new DataInputStream(s.getInputStream());
 				DataOutputStream dos = new DataOutputStream(s.getOutputStream());
 				String clientName = "Lab-P115-";
-				if (i > 9) {
+				if (i < 10) {
 					clientName = clientName + "0";
 				}
 
@@ -122,7 +123,7 @@ public class Server {
 						DataInputStream dis = new DataInputStream(s.getInputStream());
 						DataOutputStream dos = new DataOutputStream(s.getOutputStream());
 						String AdminName = "Lab-P115-Admin";
-						if (i > 9) {
+						if (k <10) {
 							AdminName = AdminName + "0";
 						}
 

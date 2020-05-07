@@ -12,7 +12,7 @@ import java.util.Scanner;
 
 public class Display {
 	// data
-	final static int ServerPort = 1235;
+	final static int ServerPort = 3015;
 	final static String Host = "localhost";
 	Socket s;
 	DataInputStream dis;

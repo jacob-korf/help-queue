@@ -69,9 +69,7 @@ public class Admin {
 
     public String getQuery(String query) {
         try {
-        	System.out.println("query" + query);
-        	String q = "query" + query;
-            this.dos.writeUTF(q);
+            this.dos.writeUTF("query" + query);
             return this.dis.readUTF();
         } catch (IOException var2) {
             return "Failure";
