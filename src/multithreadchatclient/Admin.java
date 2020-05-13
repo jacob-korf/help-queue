@@ -20,6 +20,7 @@ public class Admin {
     public Admin() {
     }
 
+    //connect to server; returns false in case of failed connection to send message to shutdown the adminPanel
     public boolean connect() {
         try {
             InetAddress ip = InetAddress.getByName("localhost");
@@ -32,46 +33,40 @@ public class Admin {
                 var3.printStackTrace();
             }
 
-        } catch (IOException var4) {
+        } catch (IOException var4) {// Failure to connect to Server
             return false;
         }
 
         return true;
     }
 
-    public String sendRequest() {
-        try {
-            this.dos.writeUTF("Sent");
-            return this.dis.readUTF();
-        } catch (IOException var2) {
-            return "Failure";
-        }
-    }
-
+    //Sends a message to AdminHandler to cancel the client with workstation name "wk" and receives a message whether it was a success
     public String cancelRequest(String wkName) {
         try {
             this.dos.writeUTF("Cancel#"+ wkName);
             return this.dis.readUTF();
-        } catch (IOException var2) {
+        } catch (IOException var2) {// Failure to connect to Server
             return "Failure";
         }
     }
 
+    //Sends a message to AdminHandler to clear the requestList and receives a message whether it was a success
     public String resetList() {
         try {
             this.dos.writeUTF("Reset");
             return this.dis.readUTF();
-        } catch (IOException var2) {
+        } catch (IOException var2) {// Failure to connect to Server
             return "Failure";
         }
 
     }
-
+    
+    //Sends a message to AdminHandler to add a new calendar entry
     public String getQuery(String query) {
         try {
             this.dos.writeUTF("query" + query);
             return this.dis.readUTF();
-        } catch (IOException var2) {
+        } catch (IOException var2) { // Failure to connect to Server
             return "Failure";
         }
 

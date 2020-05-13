@@ -32,18 +32,21 @@ public class AdminHandler implements Runnable {
 
 	public void run() {
 		while (this.isloggedin) {
-			String hh = "";
+			String input = "";
 
 			try {
-				hh = this.dis.readUTF();
+				//Read input from the Admin
+				input = this.dis.readUTF();
+				
+				//Case of resetting the request list
+				if (input.equals("Reset")) {
 
-				if (hh.equals("Reset")) {
-
-					String dateformat = "YYYY-MM-dd hh:mm:ss";
+					String dateformat = "YYYY-MM-dd input:mm:ss";
 					SimpleDateFormat dtf1 = new SimpleDateFormat(dateformat);
 					String endDate = dtf1.format(new java.util.Date());
 
-					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("YYYY-MM-dd hh:mm:ss");
+					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("YYYY-MM-dd input:mm:ss");
+					//Log cancel request for every request in the current list
 					for (int x = 0; x < Server.requestList.size(); ++x) {
 						dao.connect(); // establish db connection
 						dao.setAutoCommit(false); // Set AutoCommit to false -- not sure is we want this to be false
@@ -56,28 +59,30 @@ public class AdminHandler implements Runnable {
 							dao.executeSQLNonQuery(
 									"INSERT INTO helpRequest (unique_id, event, workStation, originator, course_number, section, request_time, cancel_time, wait_time) VALUES(help_seq.nextval, 'Cancel', '"
 											+ Server.requestList.get(x).getName() + "', 'Admin', '" + courseN + "', '" + sectionN + "', to_date('"
-											+ startDate + "', 'YYYY/MM/DD HH24:MI:SS'), to_date('" + endDate
-											+ "', 'YYYY/MM/DD HH24:MI:SS'), INTERVAL '" + Server.requestList.get(x).getWaitTime() + "' SECOND)");
+											+ startDate + "', 'YYYY/MM/DD input24:MI:SS'), to_date('" + endDate
+											+ "', 'YYYY/MM/DD input24:MI:SS'), INTERVAL '" + Server.requestList.get(x).getWaitTime() + "' SECOND)");
 
-						} else {
+						} else { //In the case of no course or section
 							dao.executeSQLNonQuery(
 									"INSERT INTO helpRequest (unique_id, event, workStation, originator, request_time, cancel_time, wait_time) VALUES(help_seq.nextval, 'Cancel', '"
 											+ Server.requestList.get(x).getName() + "', 'Admin', to_date('" + startDate
-											+ "', 'YYYY/MM/DD HH24:MI:SS'), to_date('" + endDate
-											+ "', 'YYYY/MM/DD HH24:MI:SS'), INTERVAL '" + Server.requestList.get(x).getWaitTime()  + "' SECOND)");
+											+ "', 'YYYY/MM/DD input24:MI:SS'), to_date('" + endDate
+											+ "', 'YYYY/MM/DD input24:MI:SS'), INTERVAL '" + Server.requestList.get(x).getWaitTime()  + "' SECOND)");
 						}
 
 						dao.commit();
 						dao.disconnect(); // disconnects (have to do this for every method?)
 					}
+					//Clear the request list
 					Server.requestList.clear();
+					//Submit success message back to Admin
 					this.dos.writeUTF("Help Request is cancelled");
-				} else if (hh.contains("Cancel#")) {
-					String wk = hh.substring(7);
+				} else if (input.contains("Cancel#")) { //Case of cancelling specific workstation
+					String wk = input.substring(7); //Cut out "Cancel#" from input
 
 					int pos = -1;
 					int waitTime = 0;
-					for (int x = 0; x < Server.requestList.size(); ++x) {
+					for (int x = 0; x < Server.requestList.size(); ++x) { //Find the correct workstation request if it exists
 						if (pos == -1) {
 							if (Server.requestList.get(x).getName().equals(wk)) {
 								pos = x;
@@ -90,18 +95,20 @@ public class AdminHandler implements Runnable {
 						}
 
 					}
-					if (pos > -1) {
+					if (pos > -1) { //If request exists, remove it from the request List and log it in the database
 						Server.requestList.remove(pos);
 						dao.connect(); // establish db connection
 						dao.setAutoCommit(false); // Set AutoCommit to false -- not sure is we want this to be false
 
-						String dateformat = "YYYY-MM-dd hh:mm:ss";
+						//Make the data to be correct formatting for the database
+						String dateformat = "YYYY-MM-dd input:mm:ss";
 						SimpleDateFormat dtf1 = new SimpleDateFormat(dateformat);
 						String endDate = dtf1.format(new java.util.Date());
 
-						DateTimeFormatter formatter = DateTimeFormatter.ofPattern("YYYY-MM-dd hh:mm:ss");
+						DateTimeFormatter formatter = DateTimeFormatter.ofPattern("YYYY-MM-dd input:mm:ss");
 						String startDate = startTime.format(formatter);
 
+						//Connect to database and log data
 						if (courseName.length() > 15) {
 							String courseN = courseName.substring(courseName.indexOf("Course Number: ") + 15,
 									courseName.indexOf("Section Number:"));
@@ -109,67 +116,46 @@ public class AdminHandler implements Runnable {
 							dao.executeSQLNonQuery(
 									"INSERT INTO helpRequest (unique_id, event, workStation, originator, course_number, section, request_time, cancel_time, wait_time) VALUES(help_seq.nextval, 'Cancel', '"
 											+ wk + "', 'Admin', '" + courseN + "', '" + sectionN + "', to_date('"
-											+ startDate + "', 'YYYY/MM/DD HH24:MI:SS'), to_date('" + endDate
-											+ "', 'YYYY/MM/DD HH24:MI:SS'), INTERVAL '" + waitTime + "' SECOND)");
+											+ startDate + "', 'YYYY/MM/DD input24:MI:SS'), to_date('" + endDate
+											+ "', 'YYYY/MM/DD input24:MI:SS'), INTERVAL '" + waitTime + "' SECOND)");
 
-						} else {
+						} else {//In the case there is no course currently running
 							dao.executeSQLNonQuery(
 									"INSERT INTO helpRequest (unique_id, event, workStation, originator, request_time, cancel_time, wait_time) VALUES(help_seq.nextval, 'Cancel', '"
 											+ wk + "', 'Admin', to_date('" + startDate
-											+ "', 'YYYY/MM/DD HH24:MI:SS'), to_date('" + endDate
-											+ "', 'YYYY/MM/DD HH24:MI:SS'), INTERVAL '" + waitTime + "' SECOND)");
+											+ "', 'YYYY/MM/DD input24:MI:SS'), to_date('" + endDate
+											+ "', 'YYYY/MM/DD input24:MI:SS'), INTERVAL '" + waitTime + "' SECOND)");
 						}
 
 						dao.commit();
 						dao.disconnect(); // disconnects (have to do this for every method?)
 
 					}
-					for (DisplayHandler mc : Server.disAr) {
-						// if the recipient is found, write on its output stream
+					for (DisplayHandler mc : Server.disAr)   {//Update all display applications to show the correct list of requests
 						mc.update(courseName);
 					}
+					//Send success message back to Admin
 					dos.writeUTF(wk + " Help Request is cancelled");
-				} else if (hh.contains("query")) {
-					String getQueue = hh.substring(5);
+				} else if (input.contains("query")) { //In the case of a calendar query
+					String getQueue = input.substring(5); //Cut out "query" from the message written over to keep just the actual query
 					DataAccessObject dao = new DataAccessObject();
+					//Add new Calendar event
 					dao.connect(); // establish db connection
 					dao.setAutoCommit(false); // Set AutoCommit to false -- not sure is we want this to be false
 					dao.executeSQLNonQuery(getQueue);
 					dao.commit(); // commit the transaction.
 					dao.disconnect(); // disconnects (have to do this for every method?)
+					//Send message back to admin of success
 					this.dos.writeUTF("Calendar successfully committed");
-				} else {
+				} else { //In the case it does fit in any category, send back error message
 					this.dos.writeUTF("Bad Input from Admin");
 				}
 			} catch (IOException var8) {
 				this.isloggedin = false;
 			}
 		}
-
+		//Shut down AdminHandler and remove it from the server
 		try {
-			int pos = -1;
-
-			for (int x = 0; x < Server.requestList.size(); ++x) {
-				if (pos == -1) {
-					if (((Request) Server.requestList.get(x)).getName().equals(this.name)) {
-						pos = x;
-					}
-				} else {
-					((Request) Server.requestList.get(x)).lowerQueue();
-				}
-			}
-
-			if (pos > -1) {
-				Server.requestList.remove(pos);
-			}
-
-			Iterator var13 = Server.disAr.iterator();
-
-			while (var13.hasNext()) {
-				DisplayHandler mc = (DisplayHandler) var13.next();
-				mc.update(courseName);
-			}
-
 			this.dis.close();
 			this.dos.close();
 			AdminHandler rem = null;
@@ -189,7 +175,7 @@ public class AdminHandler implements Runnable {
 		}
 
 	}
-
+	//Update current course running for latter submissions to the database
 	public void updateCourse(String courseName) {
 		// TODO Auto-generated method stub
 		this.courseName = courseName;

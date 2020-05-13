@@ -59,7 +59,8 @@ public class AdminPanel extends JFrame {
 		admin = new Admin();
 		// create a new panel with GridBagLayout manager
 		JPanel newPanel = new JPanel(new GridBagLayout());
-		connectServer.setBackground(Color.GREEN);
+		
+		//Set basic traits of JFormattedTextBoxes
 		startDate.setValue(new Date());
 		startDate.setText("");
 		startDate.setFocusLostBehavior(JFormattedTextField.COMMIT);
@@ -68,27 +69,28 @@ public class AdminPanel extends JFrame {
 		endDate.setText("");
 		endDate.setFocusLostBehavior(JFormattedTextField.COMMIT);
 
-		//startTime.setFormatterFactory(new DefaultFormatterFactory(new DateFormatter(new SimpleDateFormat("HH:mm"))));
 
-	    NumberFormat format = NumberFormat.getInstance();
-	    NumberFormatter formatter = new NumberFormatter(format);
-	    formatter.setValueClass(Integer.class);
-	    formatter.setMinimum(0);
-	    formatter.setMaximum(Integer.MAX_VALUE);
-	    formatter.setCommitsOnValidEdit(true);
-	    startTime.setValue(formatter);
 		startTime.setText("");
 		startTime.setFocusLostBehavior(JFormattedTextField.COMMIT);
 
-		endTime.setFormatterFactory(new DefaultFormatterFactory(new DateFormatter(new SimpleDateFormat("HH:mm"))));
 		endTime.setText("");
 		endTime.setFocusLostBehavior(JFormattedTextField.COMMIT);
 		
-		NumberFormat customFormat = NumberFormat.getIntegerInstance(); 
-		sectionNumber.setValue(new NumberFormatter(customFormat));
 		sectionNumber.setText("");
 		sectionNumber.setFocusLostBehavior(JFormattedTextField.COMMIT);
 		
+		
+		//Set up button traits
+		connectServer.setBackground(Color.GREEN);
+		this.cancelWork.addActionListener(this::cancelAction);
+		this.setCalendar.addActionListener(this::setCalendar);
+		connectServer.addActionListener(this::connectAction);
+		initHelp.addActionListener(this::resetAction);
+		cancelWork.addActionListener(this::cancelAction);
+
+		initHelp.setEnabled(false);
+		cancelWork.setEnabled(false);
+		setCalendar.setEnabled(false);
 		
 		GridBagConstraints constraints = new GridBagConstraints();
 		constraints.anchor = GridBagConstraints.WEST;
@@ -130,42 +132,36 @@ public class AdminPanel extends JFrame {
 		constraints.gridy = 2;
 		constraints.gridwidth = 1;
 		constraints.anchor = GridBagConstraints.WEST;
-		cancelWork.setBounds(20, 20, 20, 20);
 		newPanel.add(courseNumberLabel, constraints);
 
 		constraints.gridx = 0;
 		constraints.gridy = 3;
 		constraints.gridwidth = 1;
 		constraints.anchor = GridBagConstraints.WEST;
-		cancelWork.setBounds(20, 20, 20, 20);
 		newPanel.add(sectionLabel, constraints);
 
 		constraints.gridx = 0;
 		constraints.gridy = 4;
 		constraints.gridwidth = 1;
 		constraints.anchor = GridBagConstraints.WEST;
-		cancelWork.setBounds(20, 20, 20, 20);
 		newPanel.add(startDateLabel, constraints);
 
 		constraints.gridx = 0;
 		constraints.gridy = 5;
 		constraints.gridwidth = 1;
 		constraints.anchor = GridBagConstraints.WEST;
-		cancelWork.setBounds(20, 20, 20, 20);
 		newPanel.add(endDateLabel, constraints);
 
 		constraints.gridx = 0;
 		constraints.gridy = 6;
 		constraints.gridwidth = 1;
 		constraints.anchor = GridBagConstraints.WEST;
-		cancelWork.setBounds(20, 20, 20, 20);
 		newPanel.add(startTimeLabel, constraints);
 
 		constraints.gridx = 0;
 		constraints.gridy = 7;
 		constraints.gridwidth = 1;
 		constraints.anchor = GridBagConstraints.WEST;
-		cancelWork.setBounds(20, 20, 20, 20);
 		newPanel.add(endTimeLabel, constraints);
 
 
@@ -216,6 +212,7 @@ public class AdminPanel extends JFrame {
 		constraints.gridwidth = 1;
 		constraints.anchor = GridBagConstraints.WEST;
 		newPanel.add(mon, constraints);
+		
 		constraints.gridx = 0;
 		constraints.gridy = 9;
 		constraints.gridwidth = 1;
@@ -265,17 +262,8 @@ public class AdminPanel extends JFrame {
 		constraints.gridwidth = 2;
 		constraints.anchor = GridBagConstraints.WEST;
 		newPanel.add(messageLogger, constraints);
-		this.cancelWork.addActionListener(this::cancelAction);
-		// set border for the panel
-		this.setCalendar.addActionListener(this::setCalendar);
-		connectServer.addActionListener(this::connectAction);
-		initHelp.addActionListener(this::resetAction);
-		cancelWork.addActionListener(this::cancelAction);
-
-		initHelp.setEnabled(false);
-		cancelWork.setEnabled(false);
-		setCalendar.setEnabled(false);
-
+		
+		//Create border
 		newPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Admin Application"));
 
 		// add the panel to this frame
@@ -283,15 +271,10 @@ public class AdminPanel extends JFrame {
 
 		pack();
 		setLocationRelativeTo(null);
-		/*
-		 * Boolean connect = client.connect(); this.setVisible(true); if (connect) {
-		 * textField.setText("Client Connected Successfully to Server");
-		 * 
-		 * } else { textField.setText("Unsuccessful Connection to Server");
-		 * disconnect(); }
-		 */
+		
 	}
 
+	//Call this sequence to end the program in case of errors
 	public void disconnect() {
 
 		Timer timer = new Timer(6000, (ActionListener) new ActionListener() {
@@ -303,6 +286,7 @@ public class AdminPanel extends JFrame {
 		timer.start();
 	}
 
+	//Connect button listener; Enables all other buttons on success
 	public void connectAction(ActionEvent e) {
 		if (!admin.connect()) {
 			messageLogger.setText("Unsuccessful Connection to Server");
@@ -320,21 +304,26 @@ public class AdminPanel extends JFrame {
 		}
 	}
 
+	//Listener to call Admin to reset the help list
 	public void resetAction(ActionEvent e) {
 		admin.resetList();
 		messageLogger.setText("Help Queue Initialized/Re-initialized");
 	}
 
+	//Listener to call Admin to a cancel a specific workstation
 	public void cancelAction(ActionEvent e) {
 		String str = admin.cancelRequest(cancelText.getText());
 		messageLogger.setText(str);
 	}
 
+	//Listener to call Admin to add a calendar entry
 	public void setCalendar(ActionEvent e) {
 		// get all the input information
     	String startTimeStr = startTime.getText();
     	String endTimeStr = endTime.getText();
 		int i = 0;
+		
+		//Error Checking; If a text box has bad input, it will turn red
 		if(startDate.isEditValid()) {
 			++i;
 			startDate.setBackground(Color.WHITE);
@@ -424,6 +413,7 @@ public class AdminPanel extends JFrame {
 	    	++i;
 	    }
 	    
+	    //Make sure one check box is checked
 	    String day = "";
 	    Boolean daySelected = false;
 	    if(mon.isSelected()) {
@@ -455,12 +445,16 @@ public class AdminPanel extends JFrame {
 	    	daySelected = true;
 	    }
 	   
+	    //If i is 6, all text boxes are entered correctly
 		if(i == 6 && daySelected) {
 	       
+			//Build the query to be sent over to the Server
 				String que = "INSERT INTO calendar (unique_id, courseNumber, sectionNumber, startDate, endDate, startTime, endTime, daysOfTheWeek) values (cal_seq.nextval, '" + courseNumber.getText() + "', '"
 						+ sectionNumber.getText() +"',   TO_DATE('"+ startDate.getText() + "', 'MM/dd/yyyy'), TO_DATE('"+ endDate.getText() + "', 'MM/dd/yyyy'), TO_DATE('" + startTime.getText()
 						 + "', 'HH24:MI'), TO_DATE('" + endTime.getText() + "', 'HH24:MI'), '" + day + "' )";
-				String response = admin.getQuery(que); 
+				String response = admin.getQuery(que);
+				
+				//If failure to connect to server
 				if(response.equals("Failure")) {
 					messageLogger.setText("Unsuccessful Connection to Server");
 					disconnect();
@@ -476,12 +470,11 @@ public class AdminPanel extends JFrame {
 
 	}
 
+	//Main method for the Admin application
 	public static void main(String[] args) throws UnknownHostException, IOException {
 
 		AdminPanel app = new AdminPanel();
 		app.setVisible(true);
-		LocalDateTime now = LocalDateTime.now();
-		System.out.println(now);
 		
 		
 	}
