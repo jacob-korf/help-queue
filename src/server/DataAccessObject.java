@@ -4,7 +4,7 @@
  * Created by Paul J. Wagner, 25 March 2019
  *
  */
-package DAO;
+package server;
 import java.sql.*;
 import java.util.ArrayList;
 

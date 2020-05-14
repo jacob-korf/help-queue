@@ -1,9 +1,6 @@
-package multithreadchatserver;
+package server;
 
-import DAO.DataAccessObject;
-import multithreadchatclient.Admin;
 
-import Gui.Request;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -23,7 +20,6 @@ public class AdminHandler implements Runnable {
 	DataAccessObject dao = new DataAccessObject();
 	LocalDateTime startTime;
 	String courseName = "";
-	Admin ad = new Admin();
 
 	public AdminHandler(Socket s, String name, DataInputStream dis, DataOutputStream dos, String courseName) {
 		this.dis = dis;
@@ -46,11 +42,11 @@ public class AdminHandler implements Runnable {
 				//Case of resetting the request list
 				if (input.equals("Reset")) {
 
-					String dateformat = "YYYY-MM-dd input:mm:ss";
+					String dateformat = "YYYY-MM-dd HH:mm:ss";
 					SimpleDateFormat dtf1 = new SimpleDateFormat(dateformat);
 					String endDate = dtf1.format(new java.util.Date());
 
-					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("YYYY-MM-dd input:mm:ss");
+					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:ss");
 					//Log cancel request for every request in the current list
 					for (int x = 0; x < Server.requestList.size(); ++x) {
 						dao.connect(); // establish db connection
@@ -64,15 +60,15 @@ public class AdminHandler implements Runnable {
 							dao.executeSQLNonQuery(
 									"INSERT INTO helpRequest (unique_id, event, workStation, originator, course_number, section, request_time, cancel_time, wait_time) VALUES(help_seq.nextval, 'Cancel', '"
 											+ Server.requestList.get(x).getName() + "', 'Admin', '" + courseN + "', '" + sectionN + "', to_date('"
-											+ startDate + "', 'YYYY/MM/DD input24:MI:SS'), to_date('" + endDate
-											+ "', 'YYYY/MM/DD input24:MI:SS'), INTERVAL '" + Server.requestList.get(x).getWaitTime() + "' SECOND)");
+											+ startDate + "', 'YYYY/MM/DD HH24:MI:SS'), to_date('" + endDate
+											+ "', 'YYYY/MM/DD HH24:MI:SS'), INTERVAL '" + Server.requestList.get(x).getWaitTime() + "' SECOND)");
 
 						} else { //In the case of no course or section
 							dao.executeSQLNonQuery(
 									"INSERT INTO helpRequest (unique_id, event, workStation, originator, request_time, cancel_time, wait_time) VALUES(help_seq.nextval, 'Cancel', '"
 											+ Server.requestList.get(x).getName() + "', 'Admin', to_date('" + startDate
-											+ "', 'YYYY/MM/DD input24:MI:SS'), to_date('" + endDate
-											+ "', 'YYYY/MM/DD input24:MI:SS'), INTERVAL '" + Server.requestList.get(x).getWaitTime()  + "' SECOND)");
+											+ "', 'YYYY/MM/DD HH24:MI:SS'), to_date('" + endDate
+											+ "', 'YYYY/MM/DD HH24:MI:SS'), INTERVAL '" + Server.requestList.get(x).getWaitTime()  + "' SECOND)");
 						}
 
 						dao.commit();
@@ -164,31 +160,19 @@ public class AdminHandler implements Runnable {
 					dao.executeSQLQuery(cradentials); // finds something in the db that we want
 					ArrayList<String> result = dao.processResultSetArray(); // gets the result of the search
 					System.out.println(result);
+					dao.commit(); // commit the transaction.
+					dao.disconnect(); // disconnects (have to do this for every method?)
+
 					if (result.size() > 0) {
-						ad.islogin(true);
+						this.dos.writeUTF("Success");
 						//String username =  result.get(0);
 						//String password =  result.get(1);
 						//System.out.println(username);
 						//System.out.println(password);
-					}else if(result.size() <= 0){
-						ad.islogin(false);
+					}else {
+						this.dos.writeUTF("WrongPass");
 						//System.out.println("wrong username and password");
 					}
-					dao.commit(); // commit the transaction.
-					dao.disconnect(); // disconnects (have to do this for every method?)
-
-					/**
-					 * String username = "username";
-					 * 		String password = "password";
-					 * 		String thing = "credentials" + username + "/" + password;
-					 * 		String userPass = thing.substring(11) ;
-					 * 		String[] arrOfStr = userPass.split("/");
-					 * 		String username1 = arrOfStr[0];
-					 * 		String password1 = arrOfStr[1];
-					 *
-					 * 		//System.out.println(username1);
-					 * 		//System.out.println(password1);
-					 */
 				}
 
 

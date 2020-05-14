@@ -3,18 +3,13 @@
  *
  * from https://www.geeksforgeeks.org/multi-threaded-chat-application-set-1/
  */
-package multithreadchatserver;
+package server;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.*;
 
-import DAO.DataAccessObject;
-import Gui.Request;
 
 import java.net.*;
-import java.sql.Timestamp;
-import java.time.Duration;
 import java.time.LocalDateTime;
 
 //ClientHandler class

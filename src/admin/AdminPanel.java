@@ -1,26 +1,15 @@
 package admin;
 
-import multithreadchatclient.Admin;
+import admin.Admin;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.UnknownHostException;
-import java.text.DateFormat;
-import java.text.Format;
-import java.text.NumberFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.util.Calendar;
 import java.util.Date;
 
 import javax.swing.*;
-import javax.swing.text.DateFormatter;
-import javax.swing.text.DefaultFormatterFactory;
-import javax.swing.text.MaskFormatter;
-import javax.swing.text.NumberFormatter;
 
 public class AdminPanel extends JFrame {
 
@@ -54,9 +43,9 @@ public class AdminPanel extends JFrame {
 	private JLabel messageLogger = new JLabel("Admin application opened successfuly");
 	private Admin admin;
 
-	public AdminPanel() throws UnknownHostException, IOException {
+	public AdminPanel(Admin ad) throws UnknownHostException, IOException {
 		super("Admin Help Request");
-		admin = new Admin();
+		admin = ad;
 		// create a new panel with GridBagLayout manager
 		JPanel newPanel = new JPanel(new GridBagLayout());
 
@@ -86,7 +75,7 @@ public class AdminPanel extends JFrame {
 			//connectServer.setEnabled(false);
 
 		//}else{
-			connectServer.setEnabled(true);
+			connectServer.setEnabled(false);
 			connectServer.setBackground(Color.GREEN);
 		//}
 
@@ -99,9 +88,9 @@ public class AdminPanel extends JFrame {
 		cancelWork.addActionListener(this::cancelAction);
 
 
-		initHelp.setEnabled(false);
+		/*initHelp.setEnabled(false);
 		cancelWork.setEnabled(false);
-		setCalendar.setEnabled(false);
+		setCalendar.setEnabled(false);*/
 		
 		GridBagConstraints constraints = new GridBagConstraints();
 		constraints.anchor = GridBagConstraints.WEST;

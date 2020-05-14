@@ -1,4 +1,4 @@
-package Gui;
+package client;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 import javax.swing.*;
 
-import multithreadchatclient.Client;
+import client.Client;
 
 public class ClientPanel extends JFrame {
 

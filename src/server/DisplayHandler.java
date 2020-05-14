@@ -3,10 +3,9 @@
  *
  * from https://www.geeksforgeeks.org/multi-threaded-chat-application-set-1/
  */
-package multithreadchatserver;
+package server;
 
 import java.io.*;
-import java.util.*;
 import java.net.*;
 
 //DisplayHandler class

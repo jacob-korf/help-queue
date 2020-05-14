@@ -4,11 +4,10 @@
  *  from https://www.geeksforgeeks.org/multi-threaded-chat-application-set-2/
  */
 
-package multithreadchatclient;
+package display;
 
 import java.io.*;
 import java.net.*;
-import java.util.Scanner;
 
 public class Display {
 	// data

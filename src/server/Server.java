@@ -3,10 +3,8 @@
 // (powered by Fernflower decompiler)
 //
 
-package multithreadchatserver;
+package server;
 
-import DAO.DataAccessObject;
-import Gui.Request;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;

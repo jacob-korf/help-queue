@@ -1,11 +1,6 @@
-package Gui;
+package server;
 
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.text.DateFormat;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.time.LocalDateTime;
 
 public class Request {

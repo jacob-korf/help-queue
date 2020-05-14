@@ -4,7 +4,7 @@
  *  from https://www.geeksforgeeks.org/multi-threaded-chat-application-set-2/
  */
 
-package multithreadchatclient;
+package client;
 
 import java.io.*;
 import java.net.*;
