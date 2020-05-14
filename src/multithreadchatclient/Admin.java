@@ -1,6 +1,7 @@
 package multithreadchatclient;
 
 import DAO.DataAccessObject;
+import multithreadchatserver.AdminHandler;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -8,6 +9,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 public class Admin {
     static final int ServerPort = 3016;
@@ -16,6 +18,7 @@ public class Admin {
     private DataInputStream dis;
     private DataOutputStream dos;
     DataAccessObject dao;
+    private boolean flag;
 
     public Admin() {
     }
@@ -71,5 +74,21 @@ public class Admin {
         }
 
     }
+    public String login(String username, String  password){
+        try {
+            this.dos.writeUTF("credentials" + username + "/" + password);
+            return this.dis.readUTF();
+        } catch (IOException var2) { // Failure to connect to Server
+            return "Failure";
+        }
+    }
+
+    public void islogin(Boolean yesNo){
+        flag = yesNo;
+    }
+    public boolean returnLogin(){
+        return flag;
+    }
+
 
 }

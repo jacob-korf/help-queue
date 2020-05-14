@@ -59,6 +59,8 @@ public class AdminPanel extends JFrame {
 		admin = new Admin();
 		// create a new panel with GridBagLayout manager
 		JPanel newPanel = new JPanel(new GridBagLayout());
+
+		//
 		
 		//Set basic traits of JFormattedTextBoxes
 		startDate.setValue(new Date());
@@ -75,18 +77,27 @@ public class AdminPanel extends JFrame {
 
 		endTime.setText("");
 		endTime.setFocusLostBehavior(JFormattedTextField.COMMIT);
-		
+
 		sectionNumber.setText("");
 		sectionNumber.setFocusLostBehavior(JFormattedTextField.COMMIT);
-		
-		
+
+
+		//if(!login.isloggedIn()){
+			//connectServer.setEnabled(false);
+
+		//}else{
+			connectServer.setEnabled(true);
+			connectServer.setBackground(Color.GREEN);
+		//}
+
 		//Set up button traits
-		connectServer.setBackground(Color.GREEN);
+
 		this.cancelWork.addActionListener(this::cancelAction);
 		this.setCalendar.addActionListener(this::setCalendar);
 		connectServer.addActionListener(this::connectAction);
 		initHelp.addActionListener(this::resetAction);
 		cancelWork.addActionListener(this::cancelAction);
+
 
 		initHelp.setEnabled(false);
 		cancelWork.setEnabled(false);
@@ -286,6 +297,9 @@ public class AdminPanel extends JFrame {
 		timer.start();
 	}
 
+	public void loggedIn() throws IOException {
+
+	}
 	//Connect button listener; Enables all other buttons on success
 	public void connectAction(ActionEvent e) {
 		if (!admin.connect()) {
@@ -468,14 +482,5 @@ public class AdminPanel extends JFrame {
 			messageLogger.setText("Bad input in textboxes demarked red and/or no checked days of the week");
 		}
 
-	}
-
-	//Main method for the Admin application
-	public static void main(String[] args) throws UnknownHostException, IOException {
-
-		AdminPanel app = new AdminPanel();
-		app.setVisible(true);
-		
-		
 	}
 }

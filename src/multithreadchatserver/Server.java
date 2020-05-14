@@ -53,7 +53,7 @@ public class Server {
 				+ "' and daysOfTheWeek LIKE '%" + thisDay + "%'");
 		dao.executeSQLQuery(search); // finds something in the db that we want
 		ArrayList<String> result = dao.processResultSetArray(); // gets the result of the search
-		
+
 		//System.out.println(result);
 		//System.out.println("check");
 		dao.commit(); // commit the transaction.
@@ -74,6 +74,7 @@ public class Server {
 
 	public static void main(String[] args) throws IOException {
 		System.out.println("Server started Suceessfully");
+
 		//Create ServerSockets for Clients, Displays, and Admins
 		ServerSocket ss = new ServerSocket(3014);
 		ss.setSoTimeout(100);

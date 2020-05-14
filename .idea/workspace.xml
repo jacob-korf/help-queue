@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="4b01f55c-7021-44f5-bfb7-0c05b3247e6a" name="Default Changelist" comment="" />
+    <list default="true" id="4b01f55c-7021-44f5-bfb7-0c05b3247e6a" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -87,6 +89,9 @@
       <workItem from="1588880323285" duration="142000" />
       <workItem from="1588880474304" duration="917000" />
       <workItem from="1588883692187" duration="312000" />
+      <workItem from="1588884255646" duration="625000" />
+      <workItem from="1589148408576" duration="1792000" />
+      <workItem from="1589384501277" duration="224000" />
     </task>
     <servers />
   </component>
@@ -114,10 +119,11 @@
     </state>
     <state x="78" y="-1080" key="SettingsEditor/0.0.1280.680/0.-1080.1920.1040@0.-1080.1920.1040" timestamp="1588811817439" />
     <state x="52" y="0" key="SettingsEditor/0.0.1280.680/0.-1080.1920.1040@0.0.1280.680" timestamp="1588808269557" />
-    <state x="337" y="165" key="com.intellij.ide.util.TipDialog" timestamp="1588801944674">
+    <state x="337" y="165" key="com.intellij.ide.util.TipDialog" timestamp="1589384515404">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="337" y="165" key="com.intellij.ide.util.TipDialog/0.0.1280.680/0.-1080.1920.1040@0.0.1280.680" timestamp="1588801944674" />
+    <state x="337" y="165" key="com.intellij.ide.util.TipDialog/0.0.1280.680@0.0.1280.680" timestamp="1589384515404" />
     <state x="450" y="258" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1588801776856">
       <screen x="0" y="0" width="1280" height="680" />
     </state>

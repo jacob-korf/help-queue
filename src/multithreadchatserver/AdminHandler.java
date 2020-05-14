@@ -1,6 +1,8 @@
 package multithreadchatserver;
 
 import DAO.DataAccessObject;
+import multithreadchatclient.Admin;
+
 import Gui.Request;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -8,6 +10,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.time.format.DateTimeFormatter;
 
@@ -20,6 +23,7 @@ public class AdminHandler implements Runnable {
 	DataAccessObject dao = new DataAccessObject();
 	LocalDateTime startTime;
 	String courseName = "";
+	Admin ad = new Admin();
 
 	public AdminHandler(Socket s, String name, DataInputStream dis, DataOutputStream dos, String courseName) {
 		this.dis = dis;
@@ -29,6 +33,7 @@ public class AdminHandler implements Runnable {
 		this.isloggedin = true;
 		this.courseName = courseName;
 	}
+
 
 	public void run() {
 		while (this.isloggedin) {
@@ -147,7 +152,47 @@ public class AdminHandler implements Runnable {
 					dao.disconnect(); // disconnects (have to do this for every method?)
 					//Send message back to admin of success
 					this.dos.writeUTF("Calendar successfully committed");
-				} else { //In the case it does fit in any category, send back error message
+				} else if (input.contains("credentials")){
+					String userPass = input.substring(11) ;
+					String[] arrOfStr = userPass.split("/");
+					String username = arrOfStr[0];
+					String password = arrOfStr[1];
+
+					dao.connect(); // establish db connection
+					dao.setAutoCommit(false); // Set AutoCommit to false -- not sure is we want this to be false
+					String cradentials = "SELECT username, password1 FROM login where username = '"+ username +"' AND password1 = '" + password +"'";
+					dao.executeSQLQuery(cradentials); // finds something in the db that we want
+					ArrayList<String> result = dao.processResultSetArray(); // gets the result of the search
+					System.out.println(result);
+					if (result.size() > 0) {
+						ad.islogin(true);
+						//String username =  result.get(0);
+						//String password =  result.get(1);
+						//System.out.println(username);
+						//System.out.println(password);
+					}else if(result.size() <= 0){
+						ad.islogin(false);
+						//System.out.println("wrong username and password");
+					}
+					dao.commit(); // commit the transaction.
+					dao.disconnect(); // disconnects (have to do this for every method?)
+
+					/**
+					 * String username = "username";
+					 * 		String password = "password";
+					 * 		String thing = "credentials" + username + "/" + password;
+					 * 		String userPass = thing.substring(11) ;
+					 * 		String[] arrOfStr = userPass.split("/");
+					 * 		String username1 = arrOfStr[0];
+					 * 		String password1 = arrOfStr[1];
+					 *
+					 * 		//System.out.println(username1);
+					 * 		//System.out.println(password1);
+					 */
+				}
+
+
+				else { //In the case it does fit in any category, send back error message
 					this.dos.writeUTF("Bad Input from Admin");
 				}
 			} catch (IOException var8) {
@@ -179,5 +224,9 @@ public class AdminHandler implements Runnable {
 	public void updateCourse(String courseName) {
 		// TODO Auto-generated method stub
 		this.courseName = courseName;
+	}
+
+	public boolean correctUsPass(boolean flag){
+		return flag;
 	}
 }
