@@ -280,6 +280,7 @@ public class AdminPanel extends JFrame {
 	public void cancelAction(ActionEvent e) {
 		String str = admin.cancelRequest(cancelText.getText());
 		messageLogger.setText(str);
+		cancelText.setText("");
 	}
 
 	//Listener to call Admin to add a calendar entry
@@ -413,7 +414,10 @@ public class AdminPanel extends JFrame {
 	   
 	    //If i is 6, all text boxes are entered correctly
 		if(i == 6 && daySelected) {
-	       
+	       startDate.setText("");
+	       endDate.setText("");
+	       startTime.setText("");
+	       endTime.setText("");
 			//Build the query to be sent over to the Server
 				String que = "INSERT INTO calendar (unique_id, courseNumber, sectionNumber, startDate, endDate, startTime, endTime, daysOfTheWeek) values (cal_seq.nextval, '" + courseNumber.getText() + "', '"
 						+ sectionNumber.getText() +"',   TO_DATE('"+ startDate.getText() + "', 'MM/dd/yyyy'), TO_DATE('"+ endDate.getText() + "', 'MM/dd/yyyy'), TO_DATE('" + startTime.getText()
@@ -430,6 +434,7 @@ public class AdminPanel extends JFrame {
 				}
 			
 		}
+
 		else {
 			messageLogger.setText("Bad input in textboxes demarked red and/or no checked days of the week");
 		}

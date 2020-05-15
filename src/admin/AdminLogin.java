@@ -96,7 +96,6 @@ public class AdminLogin extends JFrame {
 		// get the username and password
 		String username = usernameEntry.getText();
 		String password = passwordEntry.getText();
-		System.out.println(username + password);
 		String response = ad.login(username, password);
 			if (response.equals("Failure")) {
 				error.setText("Unsuccessful Connection to Server");
