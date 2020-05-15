@@ -18,12 +18,11 @@ public class AdminPanel extends JFrame {
 	private JButton setCalendar = new JButton("Submit course");
 	private JLabel cancelLabel = new JLabel("Cancel workstation request: ");
 	private JLabel courseNumberLabel = new JLabel("Class course number: ");
-	private JLabel sectionLabel = new JLabel("Section Number: ");
-	private JLabel startDateLabel = new JLabel("Start Date: ");
-	private JLabel endDateLabel = new JLabel("End Date: ");
-	private JLabel startTimeLabel = new JLabel("Start Time: ");
-	private JLabel endTimeLabel = new JLabel("End Time: ");
-	private JLabel daysLabel = new JLabel("Days of the Week: ");
+	private JLabel sectionLabel = new JLabel("Section Number (Integer): ");
+	private JLabel startDateLabel = new JLabel("Start Date (Month Day, Year): ");
+	private JLabel endDateLabel = new JLabel("End Date (Month Day, Year): ");
+	private JLabel startTimeLabel = new JLabel("Start Time (HH:MM, hours range from 0 to 24): ");
+	private JLabel endTimeLabel = new JLabel("End Time (HH:MM, hours range from 0 to 24): ");
 	private JFormattedTextField startTime = new JFormattedTextField();
 	private JFormattedTextField endTime = new JFormattedTextField();
 	private JFormattedTextField startDate = new JFormattedTextField();

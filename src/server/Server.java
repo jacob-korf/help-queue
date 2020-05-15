@@ -71,7 +71,7 @@ public class Server {
 	}
 
 	public static void main(String[] args) throws IOException {
-		System.out.println("Server started Suceessfully");
+		System.out.println("Server started Successfully");
 
 		//Create ServerSockets for Clients, Displays, and Admins
 		ServerSocket ss = new ServerSocket(3014);

@@ -102,11 +102,11 @@ public class AdminHandler implements Runnable {
 						dao.setAutoCommit(false); // Set AutoCommit to false -- not sure is we want this to be false
 
 						//Make the data to be correct formatting for the database
-						String dateformat = "YYYY-MM-dd input:mm:ss";
+						String dateformat = "YYYY-MM-dd HH:mm:ss";
 						SimpleDateFormat dtf1 = new SimpleDateFormat(dateformat);
 						String endDate = dtf1.format(new java.util.Date());
 
-						DateTimeFormatter formatter = DateTimeFormatter.ofPattern("YYYY-MM-dd input:mm:ss");
+						DateTimeFormatter formatter = DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:ss");
 						String startDate = startTime.format(formatter);
 
 						//Connect to database and log data
@@ -117,15 +117,15 @@ public class AdminHandler implements Runnable {
 							dao.executeSQLNonQuery(
 									"INSERT INTO helpRequest (unique_id, event, workStation, originator, course_number, section, request_time, cancel_time, wait_time) VALUES(help_seq.nextval, 'Cancel', '"
 											+ wk + "', 'Admin', '" + courseN + "', '" + sectionN + "', to_date('"
-											+ startDate + "', 'YYYY/MM/DD input24:MI:SS'), to_date('" + endDate
-											+ "', 'YYYY/MM/DD input24:MI:SS'), INTERVAL '" + waitTime + "' SECOND)");
+											+ startDate + "', 'YYYY/MM/DD HH24:MI:SS'), to_date('" + endDate
+											+ "', 'YYYY/MM/DD HH24:MI:SS'), INTERVAL '" + waitTime + "' SECOND)");
 
 						} else {//In the case there is no course currently running
 							dao.executeSQLNonQuery(
 									"INSERT INTO helpRequest (unique_id, event, workStation, originator, request_time, cancel_time, wait_time) VALUES(help_seq.nextval, 'Cancel', '"
 											+ wk + "', 'Admin', to_date('" + startDate
-											+ "', 'YYYY/MM/DD input24:MI:SS'), to_date('" + endDate
-											+ "', 'YYYY/MM/DD input24:MI:SS'), INTERVAL '" + waitTime + "' SECOND)");
+											+ "', 'YYYY/MM/DD HH24:MI:SS'), to_date('" + endDate
+											+ "', 'YYYY/MM/DD HH24:MI:SS'), INTERVAL '" + waitTime + "' SECOND)");
 						}
 
 						dao.commit();
@@ -188,7 +188,7 @@ public class AdminHandler implements Runnable {
 			this.dis.close();
 			this.dos.close();
 			AdminHandler rem = null;
-			Iterator var16 = Server.ar.iterator();
+			Iterator var16 = Server.adAr.iterator();
 
 			while (var16.hasNext()) {
 				AdminHandler mc = (AdminHandler) var16.next();

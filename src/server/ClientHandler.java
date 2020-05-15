@@ -165,7 +165,10 @@ class ClientHandler implements Runnable {
                             pos = x;
                         } 
                     }
-                    average /= Server.requestList.size();
+                    if(Server.requestList.size()>0)
+                    {
+                        average /= Server.requestList.size();
+                    }
                     if(pos==-1) {
                         dos.writeUTF(average + "#Cancel");
                     } else {
