@@ -52,8 +52,6 @@ public class Server {
 		dao.executeSQLQuery(search); // finds something in the db that we want
 		ArrayList<String> result = dao.processResultSetArray(); // gets the result of the search
 
-		//System.out.println(result);
-		//System.out.println("check");
 		dao.commit(); // commit the transaction.
 		dao.disconnect(); // disconnects (have to do this for every method?)
 		

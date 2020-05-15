@@ -159,19 +159,13 @@ public class AdminHandler implements Runnable {
 					String cradentials = "SELECT username, password1 FROM login where username = '"+ username +"' AND password1 = '" + password +"'";
 					dao.executeSQLQuery(cradentials); // finds something in the db that we want
 					ArrayList<String> result = dao.processResultSetArray(); // gets the result of the search
-					System.out.println(result);
 					dao.commit(); // commit the transaction.
 					dao.disconnect(); // disconnects (have to do this for every method?)
 
 					if (result.size() > 0) {
 						this.dos.writeUTF("Success");
-						//String username =  result.get(0);
-						//String password =  result.get(1);
-						//System.out.println(username);
-						//System.out.println(password);
 					}else {
 						this.dos.writeUTF("WrongPass");
-						//System.out.println("wrong username and password");
 					}
 				}
 
