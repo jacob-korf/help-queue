@@ -16,9 +16,10 @@ public class DisplayPanel extends JFrame {
 
 	private static JLabel currentClients = new JLabel("Current Client: ");
 	private JLabel workstation = new JLabel("WorkStation             ");
-	private JLabel RequestTime = new JLabel("RequestTime          ");
-	private JLabel WaitTime = new JLabel("WaitTime");
+	private JLabel RequestTime = new JLabel("   RequestTime          ");
+	private JLabel WaitTime = new JLabel("   WaitTime");
 	private JLabel positionNumber = new JLabel("PositionNumber     ");
+	private JLabel preferName = new JLabel("Name             ");
 	private static JLabel clock = new JLabel();
 	private static JTextArea queue = null;
 	static Display display;
@@ -146,9 +147,16 @@ public class DisplayPanel extends JFrame {
 		constraints.gridwidth = 1;
 		constraints.gridheight = 1;
 		constraints.anchor = GridBagConstraints.WEST;
+		newPanel.add(preferName, constraints);
+		
+		constraints.gridx = 3;
+		constraints.gridy = 2;
+		constraints.gridwidth = 1;
+		constraints.gridheight = 1;
+		constraints.anchor = GridBagConstraints.WEST;
 		newPanel.add(RequestTime, constraints);
 
-		constraints.gridx = 3;
+		constraints.gridx = 4;
 		constraints.gridy = 2;
 		constraints.gridwidth = 1;
 		constraints.gridheight = 1;

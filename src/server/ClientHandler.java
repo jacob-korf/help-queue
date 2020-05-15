@@ -23,6 +23,7 @@ class ClientHandler implements Runnable {
     String endDate = ""; // help request end
     String startDate = ""; // help request start
     String courseName = ""; // course name
+	String preferredName = "N/A";
 
     // constructor
     public ClientHandler(Socket s, String name, DataInputStream dis, DataOutputStream dos, String courseName) {
@@ -65,7 +66,7 @@ class ClientHandler implements Runnable {
                     }
                     if (pos == -1) {
                     	System.out.println("check");
-                        Server.requestList.add(new Request(this.name, current, position, 0));
+                        Server.requestList.add(new Request(this.name, current, position, 0, this.preferredName));
                         for (DisplayHandler mc : Server.disAr) {
                             // if the recipient is found, write on its output stream
                             mc.update(courseName);
@@ -143,7 +144,17 @@ class ClientHandler implements Runnable {
                     dao.commit(); // commit the transaction.
                     dao.disconnect(); // disconnects (have to do this for every method?)
                 }
-
+                //When Client updates their preferred name
+                else if (hh.contains("#Name")) {
+                	this.preferredName = hh.substring(0,hh.indexOf("#Name"));
+                    for (int x = 0; x < Server.requestList.size(); ++x) {
+                        if (Server.requestList.get(x).getName().equals(this.name)) {
+                            Server.requestList.get(x).updateName(this.preferredName);
+                        } 
+                    }
+                        dos.writeUTF("Success");
+                    
+                } 
                 // if the admin cancels the help request
                 else if (hh.equals("Update")) {
                     int pos = -1;

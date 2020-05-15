@@ -8,18 +8,20 @@ public class Request {
 	private LocalDateTime requestTime;
 	private int queueNumber;
 	private int waitTime;
+	private String name;
 	
-	public Request(String workstation, LocalDateTime requestTime, int queueNumber, int waitTime) {
+	public Request(String workstation, LocalDateTime requestTime, int queueNumber, int waitTime, String preferredName) {
 		this.workstation = workstation;
 		this.requestTime = requestTime;
 		this.queueNumber = queueNumber;
 		this.waitTime = waitTime;
+		updateName(preferredName);
 	}
 	public String toString() {
 		        DecimalFormat formatM = new DecimalFormat("000");
 		        DecimalFormat formatS = new DecimalFormat("00");
 		// returning string for help request
-		return queueNumber + "            " + workstation+ "     "+formatS.format(requestTime.getHour()) + ":" + formatS.format(requestTime.getMinute()) + ":" +formatS.format(requestTime.getSecond()) + "      "  + formatM.format(waitTime/60) + ":" + formatS.format(waitTime%60);
+		return queueNumber + "            " + workstation+ "    "+ name + formatS.format(requestTime.getHour()) + ":" + formatS.format(requestTime.getMinute()) + ":" +formatS.format(requestTime.getSecond()) + "      "  + formatM.format(waitTime/60) + ":" + formatS.format(waitTime%60);
 	}
 	// calculating wait time
 	public void updateTime(LocalDateTime updatedTime) {
@@ -43,5 +45,12 @@ public class Request {
 	// return help request time
 	public LocalDateTime getRequestTime() {
 		return requestTime;
+	}
+	public void updateName(String n) {
+		StringBuffer outputBuffer = new StringBuffer(n);
+		for (int i = 0; i < 12-n.length(); i++){
+		   outputBuffer.append(" ");
+		}
+		this.name = outputBuffer.toString();
 	}
 }

@@ -17,8 +17,8 @@ public class AdminLogin extends JFrame {
 	private JLabel passwordLabel = new JLabel("Password: ");
 	private JButton loginButton = new JButton("Submit");
 	private JLabel error = new JLabel();
-	private JTextArea usernameEntry = new JTextArea("");
-	private JTextArea passwordEntry = new JTextArea("");
+	private JTextField usernameEntry = new JTextField("", 20);
+	private JTextField passwordEntry = new JTextField("", 20);
 	AdminPanel admin;
 	private Admin ad = new Admin();
 
@@ -27,46 +27,45 @@ public class AdminLogin extends JFrame {
 		JPanel loginPanel = new JPanel(new GridBagLayout());
 		//Make all threads end when the red x is clicked including the Admin back-end
 		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		
 
 		GridBagConstraints constraints = new GridBagConstraints();
 		constraints.anchor = GridBagConstraints.WEST;
 		constraints.insets = new Insets(10, 10, 10, 10);
 
 		constraints.gridx = 0;
-		constraints.gridy = 1;
+		constraints.gridy = 0;
 		constraints.gridwidth = 1;
 		constraints.anchor = GridBagConstraints.WEST;
 		loginPanel.add(usernameLabel, constraints);
 
 		constraints.gridx = 1;
-		constraints.gridy = 1;
+		constraints.gridy = 0;
 		constraints.gridwidth = 1;
 		constraints.anchor = GridBagConstraints.WEST;
-		usernameEntry.setColumns(20);
 		loginPanel.add(usernameEntry, constraints);
 
 		constraints.gridx = 0;
-		constraints.gridy = 2;
+		constraints.gridy = 1;
 		constraints.gridwidth = 1;
 		constraints.anchor = GridBagConstraints.WEST;
 		loginPanel.add(passwordLabel, constraints);
 
 		constraints.gridx = 1;
-		constraints.gridy = 2;
+		constraints.gridy = 1;
 		constraints.gridwidth = 1;
 		constraints.anchor = GridBagConstraints.WEST;
-		passwordEntry.setColumns(20);
 		loginPanel.add(passwordEntry, constraints);
 
 		constraints.gridx = 0;
-		constraints.gridy = 4;
+		constraints.gridy = 2;
 		constraints.gridwidth = 1;
 		constraints.anchor = GridBagConstraints.WEST;
 		loginPanel.add(loginButton, constraints);
 
 		constraints.gridx = 0;
-		constraints.gridy = 5;
-		constraints.gridwidth = 1;
+		constraints.gridy = 3;
+		constraints.gridwidth = 2;
 		constraints.anchor = GridBagConstraints.WEST;
 		loginPanel.add(error, constraints);
 
@@ -99,8 +98,6 @@ public class AdminLogin extends JFrame {
 		String password = passwordEntry.getText();
 		System.out.println(username + password);
 		String response = ad.login(username, password);
-		Boolean checkPass = false;
-		while (!checkPass) {
 			if (response.equals("Failure")) {
 				error.setText("Unsuccessful Connection to Server");
 				loginButton.setEnabled(false);
@@ -108,13 +105,13 @@ public class AdminLogin extends JFrame {
 				usernameEntry.setText("");
 				passwordEntry.setEnabled(false);
 				passwordEntry.setText("");
-				checkPass = true;
 				disconnect();
 			} else if (response.equals("WrongPass")) {
 				error.setText("Incorrect Username or Password");
+				pack();
+				
 			} else {
 				try {
-					checkPass = true;
 					admin = new AdminPanel(ad);		
 					admin.setVisible(true); // the username and password are correct then show the admin panel
 					dispose(); // dispose of the login panel.
@@ -125,7 +122,7 @@ public class AdminLogin extends JFrame {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-			}
+			
 		}
 	}
 

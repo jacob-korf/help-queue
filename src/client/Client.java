@@ -72,10 +72,21 @@ public class Client {
 	}
 
 	public String update() {
-	// Information: Workstation help request canceled by admin
+	// Information: Update information displayed within ClientPanel, whether that be a forced cancellation by admin,
+	// or updating average wait time and updating queue position
 	// write on the output stream
 		try {
 		dos.writeUTF("Update");
+			return dis.readUTF();
+		} catch (IOException e) {
+			return "Failure";
+		}
+	}
+
+	public String sendName(String name) {
+		// Information: send a new preferred name to Client Handler to be put on all current and future requests
+		try {
+		dos.writeUTF(name + "#Name");
 			return dis.readUTF();
 		} catch (IOException e) {
 			return "Failure";
