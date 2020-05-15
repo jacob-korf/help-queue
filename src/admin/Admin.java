@@ -15,7 +15,6 @@ public class Admin {
     private DataInputStream dis;
     private DataOutputStream dos;
     DataAccessObject dao;
-    private boolean flag;
 
     public Admin() {
     }

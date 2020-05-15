@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
+@SuppressWarnings("serial")
 public class AdminLogin extends JFrame {
 	// private boolean flag = false;
 	// private static String username = "";
