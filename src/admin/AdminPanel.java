@@ -13,8 +13,6 @@ import javax.swing.*;
 
 public class AdminPanel extends JFrame {
 
-	// private static String contents = "";
-	private JButton connectServer = new JButton("Connect to server");
 	private JButton initHelp = new JButton("Initialize/Reset help queue");
 	private JButton cancelWork = new JButton("Submit");
 	private JButton setCalendar = new JButton("Submit course");
@@ -49,7 +47,8 @@ public class AdminPanel extends JFrame {
 		// create a new panel with GridBagLayout manager
 		JPanel newPanel = new JPanel(new GridBagLayout());
 
-		//
+		//Make all threads end when the red x is clicked including the Admin back-end
+		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		
 		//Set basic traits of JFormattedTextBoxes
 		startDate.setValue(new Date());
@@ -71,39 +70,24 @@ public class AdminPanel extends JFrame {
 		sectionNumber.setFocusLostBehavior(JFormattedTextField.COMMIT);
 
 
-		//if(!login.isloggedIn()){
-			//connectServer.setEnabled(false);
-
-		//}else{
-			connectServer.setEnabled(false);
-			connectServer.setBackground(Color.GREEN);
-		//}
-
-		//Set up button traits
 
 		this.cancelWork.addActionListener(this::cancelAction);
 		this.setCalendar.addActionListener(this::setCalendar);
-		connectServer.addActionListener(this::connectAction);
 		initHelp.addActionListener(this::resetAction);
 		cancelWork.addActionListener(this::cancelAction);
+		initHelp.setBackground(Color.GREEN);
+		cancelWork.setBackground(Color.GREEN);
+		setCalendar.setBackground(Color.GREEN);
 
 
-		/*initHelp.setEnabled(false);
-		cancelWork.setEnabled(false);
-		setCalendar.setEnabled(false);*/
 		
 		GridBagConstraints constraints = new GridBagConstraints();
 		constraints.anchor = GridBagConstraints.WEST;
 		constraints.insets = new Insets(10, 10, 10, 10);
 
 		// add components to the panel
-		constraints.gridx = 0;
-		constraints.gridy = 0;
-		constraints.gridwidth = 1;
-		constraints.anchor = GridBagConstraints.WEST;
-		newPanel.add(connectServer, constraints);
 
-		constraints.gridx = 1;
+		constraints.gridx = 0;
 		constraints.gridy = 0;
 		constraints.gridwidth = 1;
 		constraints.anchor = GridBagConstraints.WEST;
@@ -286,26 +270,6 @@ public class AdminPanel extends JFrame {
 		timer.start();
 	}
 
-	public void loggedIn() throws IOException {
-
-	}
-	//Connect button listener; Enables all other buttons on success
-	public void connectAction(ActionEvent e) {
-		if (!admin.connect()) {
-			messageLogger.setText("Unsuccessful Connection to Server");
-			disconnect();
-		} else {
-			messageLogger.setText("Successful Connection to Server");
-			initHelp.setEnabled(true);
-			initHelp.setBackground(Color.GREEN);
-			cancelWork.setEnabled(true);
-			cancelWork.setBackground(Color.GREEN);
-			setCalendar.setEnabled(true);
-			setCalendar.setBackground(Color.GREEN);
-			connectServer.setEnabled(false);
-			connectServer.setBackground(Color.WHITE);
-		}
-	}
 
 	//Listener to call Admin to reset the help list
 	public void resetAction(ActionEvent e) {

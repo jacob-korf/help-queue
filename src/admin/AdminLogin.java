@@ -25,6 +25,8 @@ public class AdminLogin extends JFrame {
 	public AdminLogin() throws UnknownHostException, IOException {
 		super("Admin Login");
 		JPanel loginPanel = new JPanel(new GridBagLayout());
+		//Make all threads end when the red x is clicked including the Admin back-end
+		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
 		GridBagConstraints constraints = new GridBagConstraints();
 		constraints.anchor = GridBagConstraints.WEST;

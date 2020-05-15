@@ -16,6 +16,8 @@ public class ClientPanel extends JFrame {
 	private JButton cancelHelpRequest = new JButton("Cancel Help Request");
 	private JButton HelpRequest = new JButton("Submit Help Request");
 	private JLabel textField = new JLabel();
+	private JLabel averageWait = new JLabel("Average Wait Time:");
+	private JLabel queuePos = new JLabel("Current Queue Position: No current help request submitted");
 	private Client client;
 	private Boolean submitted = false;
 
@@ -28,7 +30,7 @@ public class ClientPanel extends JFrame {
 			public void run() {
 				while (true) {
 					try {
-						Thread.sleep(1000);
+						Thread.sleep(100);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -41,6 +43,8 @@ public class ClientPanel extends JFrame {
 		updateClock.start();
 		// create a new panel with GridBagLayout manager
 		JPanel newPanel = new JPanel(new GridBagLayout());
+		//Make all threads end when the red x is clicked including the Client back-end
+		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		cancelHelpRequest.setBackground(Color.WHITE);
 		HelpRequest.setBackground(Color.GREEN);
 
@@ -63,6 +67,28 @@ public class ClientPanel extends JFrame {
 
 		constraints.gridx = 0;
 		constraints.gridy = 4;
+		constraints.gridwidth = 2;
+		constraints.anchor = GridBagConstraints.WEST;
+		averageWait.setBounds(20, 20, 20, 20);
+		newPanel.add(averageWait, constraints);
+		
+
+		constraints.gridx = 0;
+		constraints.gridy = 4;
+		constraints.gridwidth = 2;
+		constraints.anchor = GridBagConstraints.WEST;
+		averageWait.setBounds(20, 20, 20, 20);
+		newPanel.add(averageWait, constraints);
+
+		constraints.gridx = 0;
+		constraints.gridy = 5;
+		constraints.gridwidth = 2;
+		constraints.anchor = GridBagConstraints.WEST;
+		queuePos.setBounds(20, 20, 20, 20);
+		newPanel.add(queuePos, constraints);
+		
+		constraints.gridx = 0;
+		constraints.gridy = 6;
 		constraints.gridwidth = 2;
 		constraints.anchor = GridBagConstraints.WEST;
 		textField.setBounds(20, 20, 20, 20);
@@ -114,7 +140,7 @@ public class ClientPanel extends JFrame {
 			submitted = true;
 			textField.setText("Help Request successfully sent to queue");
 			cancelHelpRequest.setBackground(Color.RED); // cancel button set to red showing it can be canceled
-			HelpRequest.setBackground(Color.WHITE);  // help request set to white showing request was made
+			HelpRequest.setBackground(Color.WHITE); // help request set to white showing request was made
 			HelpRequest.setEnabled(false); // disable help request button
 			cancelHelpRequest.setEnabled(true); // enable cancel button
 		}
@@ -136,6 +162,7 @@ public class ClientPanel extends JFrame {
 	public void cancelRequest() {
 		// cancel of the help request
 		submitted = false;
+		queuePos.setText("Current Queue Position: No current help request submitted");
 		cancelHelpRequest.setBackground(Color.WHITE); // set cancel button to white showing request was canceled
 		HelpRequest.setBackground(Color.GREEN); // set help request button to green so they can make a new request
 		HelpRequest.setEnabled(true); // enable help request button
@@ -149,15 +176,26 @@ public class ClientPanel extends JFrame {
 			if (update.equals("Failure")) {
 				textField.setText("Unsuccessful Connection to Server");
 				disconnect();
-			} else if(update.equals("Cancel")){
-				// admin removed help request
-				textField.setText("Help Request Forcefully Removed by Administrator");
-				cancelRequest();
+			} else {
+				String[] arrOfStr = update.split("#");
+				try {
+					int average = Integer.parseInt(arrOfStr[0]);
+					String typeUpdate = arrOfStr[1];
+					averageWait.setText("Average Wait Time: " + average/60 + "m, " + average % 60 + "s");
+					if (typeUpdate.equals("Cancel")) {// admin removed help request
+						textField.setText("Help Request Forcefully Removed by Administrator");
+						cancelRequest();
+					}
+					else {
+						queuePos.setText("Current Queue Position: "+ arrOfStr[2]);
+					}
+				} catch (NumberFormatException ne) {
+					textField.setText("Unsuccessful Connection to Server");
+					disconnect();
+				}
 			}
 		}
 	}
-
-	
 
 	public static void main(String[] args) throws UnknownHostException, IOException {
 		ClientPanel app = new ClientPanel();

@@ -147,15 +147,18 @@ class ClientHandler implements Runnable {
                 // if the admin cancels the help request
                 else if (hh.equals("Update")) {
                     int pos = -1;
+                    int average = 0;
                     for (int x = 0; x < Server.requestList.size(); ++x) {
+                    	average += Server.requestList.get(x).getWaitTime();
                         if (Server.requestList.get(x).getName().equals(this.name)) {
-                            pos = 1;
-                        }
+                            pos = x;
+                        } 
                     }
+                    average /= Server.requestList.size();
                     if(pos==-1) {
-                        dos.writeUTF("Cancel");
+                        dos.writeUTF(average + "#Cancel");
                     } else {
-                        dos.writeUTF("No changes");
+                        dos.writeUTF(average + "#No changes + #" + Server.requestList.get(pos).getPosition());
                     }
                 } else {
                     dos.writeUTF("Bad Input from Client");
@@ -174,9 +177,7 @@ class ClientHandler implements Runnable {
             int pos = -1;
             for (int x = 0; x < Server.requestList.size(); ++x) {
                 if (pos == -1) {
-                    if (Server.requestList.get(x).getName().equals(this.name)) {
                         pos = x;
-                    }
                 } else {
                     Server.requestList.get(x).lowerQueue();
                 }

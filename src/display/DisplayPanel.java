@@ -103,6 +103,8 @@ public class DisplayPanel extends JFrame {
 		super("Help Queue Display");
 		display = new Display();
 		connect = display.connect();
+		//Make all threads end when the red x is clicked including the Display back-end
+		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		// create a new panel with GridBagLayout manager
 		JPanel newPanel = new JPanel(new GridBagLayout());
 
